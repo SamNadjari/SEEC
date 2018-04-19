@@ -14,3 +14,6 @@ sudo apt-get -y install x2goserver x2goserver-xsession
 
 #install mplayer
 sudo apt-get install mplayer mplayer-gui mplayer-skin
+
+#install imagemagick
+sudo apt-get install imagemagick imagemagick-doc
