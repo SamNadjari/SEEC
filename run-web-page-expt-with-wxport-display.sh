@@ -2,4 +2,4 @@
 
 export DISPLAY=:0
 
-sudo python web-page-visit.py
+python web-page-visit.py

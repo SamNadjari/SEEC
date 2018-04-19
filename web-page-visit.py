@@ -4,9 +4,9 @@ import webbrowser
 import time, os
 
 
-run_no = 2
+run_no = 1
 sleep_time = 40
-rdp = "new-teamviewer-with-vm-client-loss-0.1%"
+rdp = "with-capture-teamviewer-with-vm-client-loss-1%"
 client_IP = "192.168.122.216"
 client_user = "k"
 
@@ -17,6 +17,7 @@ file_name = "run-"+str(run_no)+"-python-"+rdp+"-"+str(sleep_time)+"sec-sleep-no-
 
 print("start tcpdump")
 tcpdump_command = "sudo tcpdump -B 4096 -i ens3 -w "+file_name+".pcap &"
+print(tcpdump_command)
 os.system(tcpdump_command)
 
 time.sleep(sleep_time)
@@ -59,6 +60,9 @@ os.system(capture_display_commnad)
 
 print("Kill tcpdump")
 os.system("sudo killall tcpdump")
+
+print("clos firefox")
+os.system("sudo killall firefox")
 
 print("done")
 

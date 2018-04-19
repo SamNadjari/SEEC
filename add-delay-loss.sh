@@ -5,7 +5,7 @@ IF=ens3
 rate=1000mbit
 limit=10mb #should equal to 2 BDP to ensure no packet is dropped by tc
 RTT=0ms #30ms
-loss=0.1% #0.01%
+loss=1% #0.01%
 
 sudo tc qdisc del dev $IF root
 
