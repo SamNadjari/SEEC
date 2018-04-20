@@ -6,7 +6,7 @@ import time, os
 
 run_no = 1
 sleep_time = 40
-rdp = "with-capture-teamviewer-with-vm-client-loss-1%"
+rdp = "with-capture-teamviewer-with-vm-client-no-loss"
 client_IP = "192.168.122.216"
 client_user = "k"
 
