@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#run this script with another script (
+#sudo ./vq-expt.sh vnc wifi 1
+#88888888
 #run the script with sudo and change the IP address in the tshark command below
 
 app=$1

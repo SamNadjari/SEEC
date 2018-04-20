@@ -17,3 +17,12 @@ sudo apt-get install mplayer mplayer-gui mplayer-skin
 
 #install imagemagick
 sudo apt-get install imagemagick imagemagick-doc
+#to install the latest imagemagick 7.*
+sudo apt-get install build-essential
+wget http://www.imagemagick.org/download/ImageMagick.tar.gz
+tar -xvf ImageMagick.tar.gz
+cd ImageMagick-7.0.*
+./configure --prefix=/usr
+make
+sudo make install
+sudo ldconfig /usr/local/lib
