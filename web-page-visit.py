@@ -9,6 +9,7 @@ sleep_time = 40
 rdp = "with-capture-teamviewer-with-vm-client-no-loss"
 client_IP = "192.168.122.216"
 client_user = "k"
+traces_dir = "SEEC/results/traces/"
 
 #for some reasons when I run this command here, it cannot set the variable, so I did it in another shell script which calls this script
 #os.system("export DISPLAY=:0")
@@ -16,7 +17,7 @@ client_user = "k"
 file_name = "run-"+str(run_no)+"-python-"+rdp+"-"+str(sleep_time)+"sec-sleep-no-filter"
 
 print("start tcpdump")
-tcpdump_command = "sudo tcpdump -B 4096 -i ens3 -w "+file_name+".pcap &"
+tcpdump_command = "sudo tcpdump -B 4096 -i ens3 -w "+traces_dir+file_name+".pcap &"
 print(tcpdump_command)
 os.system(tcpdump_command)
 
@@ -38,7 +39,6 @@ time.sleep(sleep_time)
 print("open food blog")
 #os.system("DISPLAY=:0 firefox -new-tab -url https://pinchofyum.com")
 webbrowser.get('firefox').open('https://pinchofyum.com')
-#or: webbrowser.get('firefox').open_new_tab('http://www.google.com')
 
 print("sleep for 10 sec")
 time.sleep(sleep_time)
