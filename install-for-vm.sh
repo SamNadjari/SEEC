@@ -1,7 +1,7 @@
 
 #install sshd ifconfig vim
 sudo apt-get -y update
-sudo apt-get -y install vim net-tools opens-server tshark
+sudo apt-get -y install vim net-tools openssh-server tshark
 
 #install x2go
 sudo apt-get -y install software-properties-common python-software-properties
