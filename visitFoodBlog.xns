@@ -1,0 +1,351 @@
+####################################
+#         System information       #
+####################################
+# Date:                   2018:04:23 
+# Time:                   18:09:36 
+# Xnee program:           cnee 
+# Xnee version:           3.19 
+# Xnee home:              http://www.gnu.org/software/xnee/ 
+# Xnee info mailing list: info-xnee@gnu.org 
+# Xnee bug mailing list:  bug-xnee@gnu.org 
+# X version:              11 
+# X revision:             0 
+# X vendor:               The X.Org Foundation 
+# X vendor release:       11905000 
+# Record version major:   1
+# Record version minor:   13
+# OS name:                Linux 
+# OS Release:             4.13.0-36-generic 
+# OS Version:             #40~16.04.1-Ubuntu SMP Fri Feb 16 23:25:58 UTC 2018 
+# Machine:                x86_64 
+# Nodename:               k-MATE2 
+# Display name:           :0
+# Dimension:              1024x768
+
+
+
+##############################################
+#      Xnee application arguments            #
+##############################################
+#  cnee --record --store-mouse-position --mouse --all-events -o visitFoodBlog.xns -sk q 
+
+
+##############################################
+#      Displays                              #
+##############################################
+# display :0
+# distribute
+
+
+##############################################
+#      Files                                 #
+##############################################
+# out-file visitFoodBlog.xns
+# err-file stderr
+
+
+##############################################
+#      Key Grabs                             #
+##############################################
+# stop-key         q
+# pause-key        0
+# resume-key       0
+# insert-key       0
+# exec-key         0
+# exec-program-key         xnee-exec-no-program
+
+
+##############################################
+#      Recording limits etc                  #
+##############################################
+
+events-to-record        -1
+data-to-record          -1
+seconds-to-record       -1
+# first-last
+
+# Record  all (including current) clients or only future ones
+all-clients
+# future-clients
+
+# Store the starting mouse position 
+store-mouse-position
+
+
+##############################################
+#      Resolution                            #
+##############################################
+
+# Resolution
+#recorded-resolution  1024x768
+#replay-resolution  1x1
+#resolution-adjustment  0
+
+
+##############################################
+#      Speed                                 #
+##############################################
+
+# Speed
+#speed-percent  100
+
+
+##############################################
+#      Replaying limits etc                  #
+##############################################
+
+max-threshold 20 
+min-threshold 20 
+tot-threshold 40 
+
+
+##############################################
+#      Feedback                              #
+##############################################
+#feedback-none
+#feedback-stderr
+feedback-xosd
+ 
+
+
+##############################################
+#      Various                               #
+##############################################
+
+# Plugin file 
+
+# Modes (currently not used)
+# synchronised-replay
+
+# Replay offset
+#replay-offset 0x0
+
+# Human printout of X11 data (instead of Xnee format)
+# human-printout  
+
+# Delay before starting record/replay
+# time 0
+
+# No recording of ReparentNotify
+# no-reparent-recording 
+
+# Various
+#########################################
+#          Record settings              #
+#########################################
+#   data_flags          7
+#   rState              0x143e020
+#   xids[0]             3
+#   xids[1]             0
+# Number of Ranges      3
+# RecordRange[0]
+request-range            0-0
+reply-range                   0-0 
+extension-request-major-range  0-0 
+extension-request-minor-range  0-0 
+extension-reply-major-range   0-0
+extension-reply-minor-range   0-0 
+delivered-event-range         7-31 
+device-event-range            4-6 
+error-range                   0-0 
+# RecordRange[1]
+request-range            0-0
+reply-range                   0-0 
+extension-request-major-range  0-0 
+extension-request-minor-range  0-0 
+extension-reply-major-range   0-0
+extension-reply-minor-range   0-0 
+delivered-event-range         0-0 
+device-event-range            66-66 
+error-range                   0-0 
+# RecordRange[2]
+request-range            0-0
+reply-range                   0-0 
+extension-request-major-range  0-0 
+extension-request-minor-range  0-0 
+extension-reply-major-range   0-0
+extension-reply-minor-range   0-0 
+delivered-event-range         0-0 
+device-event-range            69-71 
+error-range                   0-0 
+fake-motion x=81 y=294 
+7,4,0,0,1,0,0,1661938569,9,VirtualPS/2 VMware VMMouse
+6,4,0,0,1,0,0,1661938569,2,Virtual core pointer
+0,22,0,0,0,0,0,1661938571
+0,22,0,0,0,0,0,1661938571
+0,22,0,0,0,0,0,1661938571
+0,22,0,0,0,0,0,1661938571
+0,28,0,0,0,0,0,1661938573
+0,28,0,0,0,0,0,1661938573
+0,28,0,0,0,0,0,1661938573
+0,28,0,0,0,0,0,1661938573
+0,28,0,0,0,0,0,1661938573
+0,28,0,0,0,0,0,1661938573
+0,28,0,0,0,0,0,1661938573
+0,28,0,0,0,0,0,1661938573
+0,28,0,0,0,0,0,1661938573
+0,28,0,0,0,0,0,1661938573
+0,28,0,0,0,0,0,1661938573
+0,28,0,0,0,0,0,1661938573
+0,28,0,0,0,0,0,1661938573
+0,28,0,0,0,0,0,1661938573
+0,28,0,0,0,0,0,1661938573
+0,28,0,0,0,0,0,1661938574
+0,28,0,0,0,0,0,1661938574
+0,28,0,0,0,0,0,1661938574
+0,10,0,0,0,0,0,1661938574
+0,10,0,0,0,0,0,1661938574
+0,10,0,0,0,0,0,1661938574
+0,10,0,0,0,0,0,1661938574
+0,10,0,0,0,0,0,1661938574
+0,10,0,0,0,0,0,1661938574
+0,9,0,0,0,0,0,1661938574
+0,9,0,0,0,0,0,1661938574
+0,9,0,0,0,0,0,1661938574
+0,9,0,0,0,0,0,1661938574
+0,9,0,0,0,0,0,1661938574
+0,28,0,0,0,0,0,1661938581
+0,28,0,0,0,0,0,1661938581
+0,28,0,0,0,0,0,1661938581
+0,28,0,0,0,0,0,1661938581
+0,28,0,0,0,0,0,1661938581
+0,28,0,0,0,0,0,1661938581
+0,28,0,0,0,0,0,1661938581
+0,28,0,0,0,0,0,1661938581
+0,28,0,0,0,0,0,1661938581
+0,28,0,0,0,0,0,1661938583
+0,28,0,0,0,0,0,1661938585
+0,28,0,0,0,0,0,1661938585
+0,28,0,0,0,0,0,1661938585
+0,28,0,0,0,0,0,1661938585
+0,28,0,0,0,0,0,1661938585
+0,28,0,0,0,0,0,1661938585
+0,28,0,0,0,0,0,1661938585
+0,28,0,0,0,0,0,1661938585
+0,28,0,0,0,0,0,1661938585
+0,28,0,0,0,0,0,1661938585
+0,28,0,0,0,0,0,1661938585
+0,28,0,0,0,0,0,1661938586
+0,28,0,0,0,0,0,1661938586
+0,28,0,0,0,0,0,1661938586
+0,28,0,0,0,0,0,1661938586
+0,28,0,0,0,0,0,1661938586
+0,28,0,0,0,0,0,1661938586
+0,28,0,0,0,0,0,1661938586
+7,5,0,0,1,0,0,1661938586,9,VirtualPS/2 VMware VMMouse
+6,5,0,0,1,0,0,1661938586,2,Virtual core pointer
+0,28,0,0,0,0,0,1661938586
+0,28,0,0,0,0,0,1661938587
+0,28,0,0,0,0,0,1661938587
+0,28,0,0,0,0,0,1661938587
+0,28,0,0,0,0,0,1661938587
+0,28,0,0,0,0,0,1661938587
+0,28,0,0,0,0,0,1661938587
+0,28,0,0,0,0,0,1661938587
+0,28,0,0,0,0,0,1661938587
+0,28,0,0,0,0,0,1661938589
+0,28,0,0,0,0,0,1661938589
+0,28,0,0,0,0,0,1661938589
+0,28,0,0,0,0,0,1661938590
+0,28,0,0,0,0,0,1661938590
+0,28,0,0,0,0,0,1661938590
+0,28,0,0,0,0,0,1661938590
+0,28,0,0,0,0,0,1661938590
+0,28,0,0,0,0,0,1661938590
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938594
+0,28,0,0,0,0,0,1661938595
+0,28,0,0,0,0,0,1661938595
+0,28,0,0,0,0,0,1661938595
+0,28,0,0,0,0,0,1661938595
+0,28,0,0,0,0,0,1661938595
+0,28,0,0,0,0,0,1661938595
+0,28,0,0,0,0,0,1661938595
+0,28,0,0,0,0,0,1661938595
+0,28,0,0,0,0,0,1661938595
+0,28,0,0,0,0,0,1661938596
+0,28,0,0,0,0,0,1661938596
+0,28,0,0,0,0,0,1661938596
+0,28,0,0,0,0,0,1661938596
+0,28,0,0,0,0,0,1661938596
+0,28,0,0,0,0,0,1661938596
+0,28,0,0,0,0,0,1661938596
+0,28,0,0,0,0,0,1661938596
+0,28,0,0,0,0,0,1661938596
+7,4,0,0,1,0,0,1661938726,9,VirtualPS/2 VMware VMMouse
+6,4,0,0,1,0,0,1661938726,2,Virtual core pointer
+0,28,0,0,0,0,0,1661938726
+7,5,0,0,1,0,0,1661939130,9,VirtualPS/2 VMware VMMouse
+6,5,0,0,1,0,0,1661939130,2,Virtual core pointer
+7,6,81,294,0,0,0,1661939166,9,'VirtualPS/2 VMware VMMouse'
+7,6,82,294,0,0,0,1661939178,9,'VirtualPS/2 VMware VMMouse'
+7,6,87,294,0,0,0,1661939181,9,'VirtualPS/2 VMware VMMouse'
+7,6,92,293,0,0,0,1661939189,9,'VirtualPS/2 VMware VMMouse'
+7,6,97,291,0,0,0,1661939237,9,'VirtualPS/2 VMware VMMouse'
+7,6,102,292,0,0,0,1661939237,9,'VirtualPS/2 VMware VMMouse'
+7,6,109,290,0,0,0,1661939237,9,'VirtualPS/2 VMware VMMouse'
+7,6,116,291,0,0,0,1661939237,9,'VirtualPS/2 VMware VMMouse'
+7,6,122,291,0,0,0,1661939243,9,'VirtualPS/2 VMware VMMouse'
+7,6,129,291,0,0,0,1661939244,9,'VirtualPS/2 VMware VMMouse'
+7,6,140,291,0,0,0,1661939297,9,'VirtualPS/2 VMware VMMouse'
+7,6,155,291,0,0,0,1661939298,9,'VirtualPS/2 VMware VMMouse'
+7,6,166,291,0,0,0,1661939298,9,'VirtualPS/2 VMware VMMouse'
+7,6,178,295,0,0,0,1661939298,9,'VirtualPS/2 VMware VMMouse'
+7,6,183,295,0,0,0,1661939298,9,'VirtualPS/2 VMware VMMouse'
+7,6,192,299,0,0,0,1661939298,9,'VirtualPS/2 VMware VMMouse'
+7,6,202,302,0,0,0,1661939309,9,'VirtualPS/2 VMware VMMouse'
+7,6,208,305,0,0,0,1661939309,9,'VirtualPS/2 VMware VMMouse'
+7,6,216,307,0,0,0,1661939356,9,'VirtualPS/2 VMware VMMouse'
+7,6,223,310,0,0,0,1661939357,9,'VirtualPS/2 VMware VMMouse'
+7,6,229,312,0,0,0,1661939357,9,'VirtualPS/2 VMware VMMouse'
+7,6,233,314,0,0,0,1661939357,9,'VirtualPS/2 VMware VMMouse'
+7,6,237,317,0,0,0,1661939357,9,'VirtualPS/2 VMware VMMouse'
+7,6,239,318,0,0,0,1661939357,9,'VirtualPS/2 VMware VMMouse'
+7,6,243,320,0,0,0,1661939363,9,'VirtualPS/2 VMware VMMouse'
+7,6,245,320,0,0,0,1661939371,9,'VirtualPS/2 VMware VMMouse'
+7,6,248,322,0,0,0,1661939420,9,'VirtualPS/2 VMware VMMouse'
+7,6,250,322,0,0,0,1661939421,9,'VirtualPS/2 VMware VMMouse'
+7,6,252,324,0,0,0,1661939421,9,'VirtualPS/2 VMware VMMouse'
+7,6,253,323,0,0,0,1661939421,9,'VirtualPS/2 VMware VMMouse'
+7,6,254,325,0,0,0,1661939421,9,'VirtualPS/2 VMware VMMouse'
+7,6,256,326,0,0,0,1661939421,9,'VirtualPS/2 VMware VMMouse'
+7,6,257,325,0,0,0,1661939429,9,'VirtualPS/2 VMware VMMouse'
+7,6,256,326,0,0,0,1661939437,9,'VirtualPS/2 VMware VMMouse'
+7,6,258,327,0,0,0,1661939471,9,'VirtualPS/2 VMware VMMouse'
+7,6,257,327,0,0,0,1661939471,9,'VirtualPS/2 VMware VMMouse'
+7,6,258,328,0,0,0,1661939471,9,'VirtualPS/2 VMware VMMouse'
+7,6,258,327,0,0,0,1661939511,9,'VirtualPS/2 VMware VMMouse'
+7,6,258,328,0,0,0,1661939527,9,'VirtualPS/2 VMware VMMouse'
+7,6,259,328,0,0,0,1661939569,9,'VirtualPS/2 VMware VMMouse'
+7,6,260,328,0,0,0,1661939570,9,'VirtualPS/2 VMware VMMouse'
+7,6,261,329,0,0,0,1661939570,9,'VirtualPS/2 VMware VMMouse'
+7,6,262,328,0,0,0,1661939570,9,'VirtualPS/2 VMware VMMouse'
+7,6,263,329,0,0,0,1661939577,9,'VirtualPS/2 VMware VMMouse'
+7,6,264,330,0,0,0,1661939590,9,'VirtualPS/2 VMware VMMouse'
+7,6,265,329,0,0,0,1661939593,9,'VirtualPS/2 VMware VMMouse'
+7,6,265,330,0,0,0,1661939602,9,'VirtualPS/2 VMware VMMouse'
+7,6,266,330,0,0,0,1661939619,9,'VirtualPS/2 VMware VMMouse'
+7,6,266,331,0,0,0,1661939629,9,'VirtualPS/2 VMware VMMouse'
+7,6,266,330,0,0,0,1661939644,9,'VirtualPS/2 VMware VMMouse'
+7,6,268,330,0,0,0,1661939689,9,'VirtualPS/2 VMware VMMouse'
+7,4,0,0,1,0,0,1661939894,9,VirtualPS/2 VMware VMMouse
+6,4,0,0,1,0,0,1661939894,2,Virtual core pointer
+7,5,0,0,1,0,0,1661939894,9,VirtualPS/2 VMware VMMouse
+6,5,0,0,1,0,0,1661939894,2,Virtual core pointer
+0,28,0,0,0,0,0,1661939895
