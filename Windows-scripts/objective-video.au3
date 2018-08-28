@@ -45,9 +45,17 @@ Global $routerPsw = "123"
 
 ; play video at regular speed
 
-For $video in $vdieoName
+Local $videoSpeed = ["regular" , "slow"]
+For $speed in $videoSpeed
+
+  If $speed = "regular" Then
+	  $video = $vdieoName[0]
+  Else
+	  $video = $vdieoName[1]
+  EndIf
+
   ; start packet capture
-  router_command("start_capture")
+  router_command("start_capture", $videoSpeed)
 
   ;================== start video ===========================
   ;log time
@@ -68,10 +76,16 @@ For $video in $vdieoName
   ; stop capture
   router_command("stop_capture")
 
+  ; store the time of the video based on the video speed
+  If $speed = "regular" Then
+	  Global $reg_time = $timeDiff
+  Else
+	  Global $slow_time = $timeDiff
+  EndIf
 Next
 ;send
 
-Func router_command($cmd); cmd: "start_capture", "stop_capture", "analyze"
+Func router_command($cmd, $videoSpeed); cmd: "start_capture", "stop_capture", "analyze"
 
 	; open putty
 	ShellExecute("C:\Users\harlem1\Downloads\putty")
@@ -92,7 +106,7 @@ Func router_command($cmd); cmd: "start_capture", "stop_capture", "analyze"
 	If $cmd = "start_capture" Then
 
 	  ;run the capture
-	  Local $command = "sudo sh start-tcpdump.sh " & $routerIF
+	  Local $command = "sudo sh start-tcpdump.sh " & $routerIF & " " & $videoSpeed
 	  Send($command)
 	  Send("{ENTER}")
 	  Sleep(500)
@@ -108,7 +122,7 @@ Func router_command($cmd); cmd: "start_capture", "stop_capture", "analyze"
 	  Send("{ENTER}")
 
 	ElseIf $cmd = "analyze" Then
-	  $command = "sh analyze.sh " ;& $ & " " $ & " "
+	  $command = "sh analyze.sh " & $slow_time & " " $reg_time
 	  Send($command)
 	EndIf
 
