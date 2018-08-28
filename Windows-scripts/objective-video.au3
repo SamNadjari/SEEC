@@ -47,16 +47,16 @@ Global $routerPsw = "123"
 For $i = 0 To UBound($aRTT) - 1
    For $j = 0 To UBound($aLoss) - 1
 		Local $videoSpeed = ["regular" , "slow"]
-		For $speed in $videoSpeed
+		For $k= 0 To  UBound($videoSpeed) - 1
 
-		  If $speed = "regular" Then
+		  If $videoSpeed[$k] = "regular" Then
 			  $video = $vdieoName[0]
 		  Else
-			  $video = $vdieoName[1]
+			  $videoSpeed[$k] = $vdieoName[1]
 		  EndIf
 
 		  ; start packet capture
-		  router_command("start_capture", $videoSpeed)
+		  router_command("start_capture", $videoSpeed[$k])
 
 ;================== start video ===========================
 		  ;log time
@@ -135,7 +135,7 @@ Func router_command($cmd, $videoSpeed); cmd: "start_capture", "stop_capture", "a
 
 	;close putty
 	Sleep(500)
-	Send("exit")
-	Send("{ENTER}")
+	;Send("exit")
+	;Send("{ENTER}")
 
 EndFunc
