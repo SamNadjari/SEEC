@@ -13,7 +13,7 @@
 total_time_slow=$1
 total_time_regular=$2
 
-log_dir=/home/fatma
+log_dir=/home/fatma/SEEC/Windows-scripts
 pcap_file=capture-1
 
 total_bytes_slow=`tshark -q -z "io,stat,0,ip.src==10.101.3.3" -r $log_dir/$pcap_file-slow.pcap | grep '<>' | awk '{print $8}'`

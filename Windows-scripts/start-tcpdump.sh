@@ -1,3 +1,4 @@
 IF=$1
 speed=$2
-tcpdump -i $IF -s 100 -w capture-1-$speed.pcap &
+log_dir=/home/fatma/SEEC/Windows-scripts
+tcpdump -i $IF -s 100 -w $log_dir/capture-1-$speed.pcap &
