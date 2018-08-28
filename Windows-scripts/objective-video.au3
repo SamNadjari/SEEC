@@ -19,8 +19,8 @@
 
 ; ============================ Parameters initialization ====================
 ; QoS
-Local $aRTT[3] = [0,50, 150]
-Local $aLoss[3] = [0,0.05,1] ;packet loss rate, unit is %
+Local $aRTT[3] = [0] ;,50, 150]
+Local $aLoss[3] = [0] ;,0.05,1] ;packet loss rate, unit is %
 Local $videoDir = "C:\Users\harlem1\Desktop\AUtoIT-scripts\"
 Local $vdieoName= ["COSMOS04.mp4" , "out-1fps.mp4"]
 Local $activity = "video"
@@ -43,47 +43,49 @@ Global $routerPsw = "123"
    ; MsgBox($MB_SYSTEMMODAL, "File", "Does not exist")
  ;EndIf
 
-; play video at regular speed
 
-Local $videoSpeed = ["regular" , "slow"]
-For $speed in $videoSpeed
+For $i = 0 To UBound($aRTT) - 1
+   For $j = 0 To UBound($aLoss) - 1
+		Local $videoSpeed = ["regular" , "slow"]
+		For $speed in $videoSpeed
 
-  If $speed = "regular" Then
-	  $video = $vdieoName[0]
-  Else
-	  $video = $vdieoName[1]
-  EndIf
+		  If $speed = "regular" Then
+			  $video = $vdieoName[0]
+		  Else
+			  $video = $vdieoName[1]
+		  EndIf
 
-  ; start packet capture
-  router_command("start_capture", $videoSpeed)
+		  ; start packet capture
+		  router_command("start_capture", $videoSpeed)
 
-  ;================== start video ===========================
-  ;log time
-  Local $hTimer = TimerInit() ;begin the timer and store the handler
+		  ;================== start video ===========================
+		  ;log time
+		  Local $hTimer = TimerInit() ;begin the timer and store the handler
 
-  ;start the video at regular speed
-  ShellExecute("C:\Users\harlem1\Documents\" & $video)
-  ;ShellExecute($videoDir & $vdieoName)
-  Sleep(2000)
-  ;wait till the video ends, when the video ends the title of the VLC media player will change and that's what I'm using to detect ends of video
-  Local $hVLC = WinWaitActive("VLC media player")
-  Local $timeDiff = TimerDiff($hTimer) ; find the time difference from the first call of TImerInit
+		  ;start the video at regular speed
+		  ShellExecute("C:\Users\harlem1\Documents\" & $video)
+		  ;ShellExecute($videoDir & $vdieoName)
+		  Sleep(2000)
+		  ;wait till the video ends, when the video ends the title of the VLC media player will change and that's what I'm using to detect ends of video
+		  Local $hVLC = WinWaitActive("VLC media player")
+		  Local $timeDiff = TimerDiff($hTimer) ; find the time difference from the first call of TImerInit
 
-  WinClose($hVLC)
+		  WinClose($hVLC)
 
-  ;MsgBox($MB_OK,"Info","Video finished and it took "& $timeDiff & " ms to finish")
+		  ;MsgBox($MB_OK,"Info","Video finished and it took "& $timeDiff & " ms to finish")
 
-  ; stop capture
-  router_command("stop_capture")
+		  ; stop capture
+		  router_command("stop_capture")
 
-  ; store the time of the video based on the video speed
-  If $speed = "regular" Then
-	  Global $reg_time = $timeDiff
-  Else
-	  Global $slow_time = $timeDiff
-  EndIf
-Next
-;send
+		  ; store the time of the video based on the video speed
+		  If $speed = "regular" Then
+			  Global $reg_time = $timeDiff
+		  Else
+			  Global $slow_time = $timeDiff
+		  EndIf
+		Next
+		;send times for analysis
+		router_command("analyze", "slow") ; here the second param doesn't matter
 
 Func router_command($cmd, $videoSpeed); cmd: "start_capture", "stop_capture", "analyze"
 
