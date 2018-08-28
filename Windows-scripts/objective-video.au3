@@ -19,10 +19,10 @@
 
 ; ============================ Parameters initialization ====================
 ; QoS
-Local $aRTT[3] = [0] ;,50, 150]
-Local $aLoss[3] = [0] ;,0.05,1] ;packet loss rate, unit is %
+Local $aRTT[1] = [0] ;,50, 150]
+Local $aLoss[1] = [0] ;,0.05,1] ;packet loss rate, unit is %
 Local $videoDir = "C:\Users\harlem1\Desktop\AUtoIT-scripts\"
-Local $vdieoName= ["COSMOS04.mp4" , "out-1fps.mp4"]
+Local $vdieoName= ["COSMOS04.mp4" , "COSMOS04.mp4"] ;"out-1fps.mp4"]
 Local $activity = "video"
 GLobal $routerIP = "10.101.2.1" ; the ip address of the server acting as router and running packet capture
 Global $routerIF = "enp0s9" ; the router interface where the clinet is connected
@@ -58,7 +58,7 @@ For $i = 0 To UBound($aRTT) - 1
 		  ; start packet capture
 		  router_command("start_capture", $videoSpeed)
 
-		  ;================== start video ===========================
+;================== start video ===========================
 		  ;log time
 		  Local $hTimer = TimerInit() ;begin the timer and store the handler
 
@@ -75,7 +75,7 @@ For $i = 0 To UBound($aRTT) - 1
 		  ;MsgBox($MB_OK,"Info","Video finished and it took "& $timeDiff & " ms to finish")
 
 		  ; stop capture
-		  router_command("stop_capture")
+		  router_command("stop_capture", "slow")
 
 		  ; store the time of the video based on the video speed
 		  If $speed = "regular" Then
@@ -84,11 +84,14 @@ For $i = 0 To UBound($aRTT) - 1
 			  Global $slow_time = $timeDiff
 		  EndIf
 		Next
-		;send times for analysis
+   Next
+Next
+;send times for analysis
 		router_command("analyze", "slow") ; here the second param doesn't matter
 
-Func router_command($cmd, $videoSpeed); cmd: "start_capture", "stop_capture", "analyze"
 
+
+Func router_command($cmd, $videoSpeed); cmd: "start_capture", "stop_capture", "analyze"
 	; open putty
 	ShellExecute("C:\Users\harlem1\Downloads\putty")
 	;ShellExecute($videoDir & $vdieoName)
@@ -107,8 +110,8 @@ Func router_command($cmd, $videoSpeed); cmd: "start_capture", "stop_capture", "a
 
 	If $cmd = "start_capture" Then
 
-	  ;run the capture
-	  Local $command = "sudo sh start-tcpdump.sh " & $routerIF & " " & $videoSpeed
+	  ;run the capture /home/fatma/SEEC/Windows-scripts
+	  Local $command = "sudo sh /home/fatma/SEEC/Windows-scripts/start-tcpdump.sh " & $routerIF & " " & $videoSpeed
 	  Send($command)
 	  Send("{ENTER}")
 	  Sleep(500)
@@ -124,8 +127,10 @@ Func router_command($cmd, $videoSpeed); cmd: "start_capture", "stop_capture", "a
 	  Send("{ENTER}")
 
 	ElseIf $cmd = "analyze" Then
-	  $command = "sh analyze.sh " & $slow_time & " " $reg_time
+	  $command = "sh SEEC/Windows-scripts/analyze.sh " & $slow_time & " " & $reg_time
 	  Send($command)
+	  Send("{ENTER}")
+
 	EndIf
 
 	;close putty
