@@ -52,7 +52,7 @@ For $i = 0 To UBound($aRTT) - 1
 		  If $videoSpeed[$k] = "regular" Then
 			  $video = $vdieoName[0]
 		  Else
-			  $videoSpeed[$k] = $vdieoName[1]
+			  $video = $vdieoName[1]
 		  EndIf
 
 		  ; start packet capture
@@ -65,7 +65,7 @@ For $i = 0 To UBound($aRTT) - 1
 		  ;start the video at regular speed
 		  ShellExecute("C:\Users\harlem1\Documents\" & $video)
 		  ;ShellExecute($videoDir & $vdieoName)
-		  Sleep(2000)
+		  Sleep(5000)
 		  ;wait till the video ends, when the video ends the title of the VLC media player will change and that's what I'm using to detect ends of video
 		  Local $hVLC = WinWaitActive("VLC media player")
 		  Local $timeDiff = TimerDiff($hTimer) ; find the time difference from the first call of TImerInit
@@ -78,7 +78,7 @@ For $i = 0 To UBound($aRTT) - 1
 		  router_command("stop_capture", "slow")
 
 		  ; store the time of the video based on the video speed
-		  If $speed = "regular" Then
+		  If $videoSpeed[$k] = "regular" Then
 			  Global $reg_time = $timeDiff
 		  Else
 			  Global $slow_time = $timeDiff
@@ -102,11 +102,12 @@ Func router_command($cmd, $videoSpeed); cmd: "start_capture", "stop_capture", "a
 	ControlClick($hPutty, "","Button1", "left", 1,8,8)
 
 	Local $hShell = WinWaitActive($routerIP & " - PuTTY")
+	Sleep(500)
 	Send($routerUsr)
 	Send("{ENTER}")
 	Send($routerPsw)
 	Send("{ENTER}")
-	Sleep(300)
+	Sleep(500)
 
 	If $cmd = "start_capture" Then
 
@@ -127,7 +128,7 @@ Func router_command($cmd, $videoSpeed); cmd: "start_capture", "stop_capture", "a
 	  Send("{ENTER}")
 
 	ElseIf $cmd = "analyze" Then
-	  $command = "sh SEEC/Windows-scripts/analyze.sh " & $slow_time & " " & $reg_time
+	  $command = "bash SEEC/Windows-scripts/analyze.sh " & $slow_time & " " & $reg_time
 	  Send($command)
 	  Send("{ENTER}")
 
