@@ -75,7 +75,7 @@ For $i = 0 To UBound($aRTT) - 1
 		  ;MsgBox($MB_OK,"Info","Video finished and it took "& $timeDiff & " ms to finish")
 
 		  ; stop capture
-		  router_command("stop_capture", "slow")
+		  router_command("stop_capture")
 
 		  ; store the time of the video based on the video speed
 		  If $videoSpeed[$k] = "regular" Then
@@ -84,14 +84,14 @@ For $i = 0 To UBound($aRTT) - 1
 			  Global $slow_time = $timeDiff
 		  EndIf
 		Next
+		;send times for analysis
+		router_command("analyze", "slow", $aRTT[$i] , $aLoss[$j]) ; here the second param doesn't matter
    Next
 Next
-;send times for analysis
-		router_command("analyze", "slow") ; here the second param doesn't matter
 
 
 
-Func router_command($cmd, $videoSpeed); cmd: "start_capture", "stop_capture", "analyze"
+Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capture", "stop_capture", "analyze"
 	; open putty
 	ShellExecute("C:\Users\harlem1\Downloads\putty")
 	;ShellExecute($videoDir & $vdieoName)
@@ -128,15 +128,18 @@ Func router_command($cmd, $videoSpeed); cmd: "start_capture", "stop_capture", "a
 	  Send("{ENTER}")
 
 	ElseIf $cmd = "analyze" Then
-	  $command = "bash SEEC/Windows-scripts/analyze.sh " & $slow_time & " " & $reg_time
+	  $command = "sudo bash SEEC/Windows-scripts/analyze.sh " & $slow_time & " " & $reg_time & " " & $rtt & " " & $loss
 	  Send($command)
+	  Send("{ENTER}")
+	  Sleep(300)
+	  Send($routerPsw)
 	  Send("{ENTER}")
 
 	EndIf
 
 	;close putty
 	Sleep(500)
-	;Send("exit")
-	;Send("{ENTER}")
+	Send("exit")
+	Send("{ENTER}")
 
 EndFunc
