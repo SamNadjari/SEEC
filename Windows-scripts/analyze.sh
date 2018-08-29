@@ -17,10 +17,13 @@ log_dir=/home/fatma/SEEC/Windows-scripts
 pcap_file=capture-1
 
 total_bytes_slow=`tshark -q -z "io,stat,0,ip.src==10.101.3.3" -r $log_dir/$pcap_file-slow.pcap | grep '<>' | awk '{print $8}'`
-echo "total bytes" $total_bytes_slow
+echo "total bytes slow" $total_bytes_slow
 
 
 total_bytes_regular=`tshark -q -z "io,stat,0,ip.src==10.101.3.3" -r $log_dir/$pcap_file-regular.pcap | grep '<>' | awk '{print $8}'`
+
+echo "total bytes regular" $total_bytes_regular
+
 
 #========== video quality
 
