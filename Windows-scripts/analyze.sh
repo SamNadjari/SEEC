@@ -30,6 +30,6 @@ rm $log_dir/$pcap_file-slow.pcap $log_dir/$pcap_file-regular.pcap
 
 #========== video quality
 
-vq=$(bc <<< "scale=2; (($total_bytes_regular/$total_time_regular)/24) / (($total_bytes_slow/$total_time_slow)/1)")
+vq=$(bc <<< "scale=4; (($total_bytes_regular/$total_time_regular)/24) / (($total_bytes_slow/$total_time_slow)/1)")
 echo "vq is" $vq
 echo $rtt $loss $total_time_slow $total_bytes_slow $total_time_regular $total_bytes_regular $vq >> $log_dir/vq-results
