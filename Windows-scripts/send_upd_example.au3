@@ -13,8 +13,8 @@ Func Example()
     OnAutoItExitRegister("OnAutoItExit")
 
     ; Assign Local variables the loopback IP Address and the Port.
-    Local $sIPAddress = "127.0.0.1" ; This IP Address only works for testing on your own computer.
-    Local $iPort = 65532 ; Port used for the connection.
+    Local $sIPAddress = "10.101.2.3" ; This IP Address only works for testing on your own computer.
+    Local $iPort = 60000 ; Port used for the connection.
 
     #Region GUI
     Local $sTitle = "UDP Start"
@@ -80,7 +80,7 @@ EndFunc   ;==>MyUDP_Server
 
 Func MyUDP_Client($sIPAddress, $iPort)
     ; Assign a Local variable the socket and connect to a listening socket with the IP Address and Port specified.
-    Local $iSocket = UDPOpen($sIPAddress, $iPort)
+    Local $iSocket = UDPOpen($sIPAddress, $iPort,1)
     Local $iError = 0
 
     ; If an error occurred display the error code and return False.
@@ -100,7 +100,9 @@ Func MyUDP_Client($sIPAddress, $iPort)
         MsgBox(BitOR($MB_SYSTEMMODAL, $MB_ICONHAND), "", "Client:" & @CRLF & "Could not send the data, Error code: " & $iError)
         Return False
     EndIf
-
+	UDPSend($iSocket, StringToBinary("rrrr"))
+	UDPSend($iSocket, StringToBinary("aaaa"))
+	UDPSend($iSocket, StringToBinary("xxxx"))
     ; Close the socket.
     UDPCloseSocket($iSocket)
 EndFunc   ;==>MyUDP_Client
