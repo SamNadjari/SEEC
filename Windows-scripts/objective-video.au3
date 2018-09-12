@@ -21,8 +21,8 @@
 ; QoS
 Local $aRTT[1] = [0] ;,50, 150]
 Local $aLoss[1] = [0] ;,0.05,1] ;packet loss rate, unit is %
-Local $videoDir = "C:\Users\harlem1\Desktop\AUtoIT-scripts\"
-Local $vdieoName= ["COSMOS04.mp4" , "COSMOS04.mp4"] ;"out-1fps.mp4"]
+Local $videoDir = "C:\Users\Harlem1\SEEC\Windows-scripts\"
+Local $vdieoName= ["Zootopia.mp4" , "Zootopia.mp4"] ;"out-1fps.mp4"]
 Local $activity = "video"
 GLobal $routerIP = "172.28.30.124" ; the ip address of the server acting as router and running packet capture
 Global $routerIF = "ens160" ; the router interface where the clinet is connected
@@ -58,12 +58,13 @@ For $i = 0 To UBound($aRTT) - 1
 		  ; start packet capture
 		  router_command("start_capture", $videoSpeed[$k])
 
+
 ;================== start video ===========================
 		  ;log time
 		  Local $hTimer = TimerInit() ;begin the timer and store the handler
 
 		  ;start the video at regular speed
-		  ShellExecute("C:\Users\harlem1\Documents\" & $video)
+		  ShellExecute($videoDir & $video)
 		  ;ShellExecute($videoDir & $vdieoName)
 		  Sleep(5000)
 		  ;wait till the video ends, when the video ends the title of the VLC media player will change and that's what I'm using to detect ends of video
@@ -93,7 +94,7 @@ Next
 
 Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capture", "stop_capture", "analyze"
 	; open putty
-	ShellExecute("C:\Users\harlem1\Downloads\putty")
+	ShellExecute("C:\Program Files\PuTTY\putty")
 	;ShellExecute($videoDir & $vdieoName)
 	Local $hPutty = WinWaitActive("PuTTY Configuration")
 
@@ -112,7 +113,7 @@ Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capt
 	If $cmd = "start_capture" Then
 
 	  ;run the capture /home/fatma/SEEC/Windows-scripts
-	  Local $command = "sudo sh /home/fatma/SEEC/Windows-scripts/start-tcpdump.sh " & $routerIF & " " & $videoSpeed
+	  Local $command = "sudo sh /home/harlem1/SEEC/Windows-scripts/start-tcpdump.sh " & $routerIF & " " & $videoSpeed
 	  Send($command)
 	  Send("{ENTER}")
 	  Sleep(500)
