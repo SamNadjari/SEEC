@@ -24,10 +24,10 @@ Local $aLoss[1] = [0] ;,0.05,1] ;packet loss rate, unit is %
 Local $videoDir = "C:\Users\harlem1\Desktop\AUtoIT-scripts\"
 Local $vdieoName= ["COSMOS04.mp4" , "COSMOS04.mp4"] ;"out-1fps.mp4"]
 Local $activity = "video"
-GLobal $routerIP = "10.101.2.1" ; the ip address of the server acting as router and running packet capture
-Global $routerIF = "enp0s9" ; the router interface where the clinet is connected
-GLobal $routerUsr = "fatma"
-Global $routerPsw = "123"
+GLobal $routerIP = "172.28.30.124" ; the ip address of the server acting as router and running packet capture
+Global $routerIF = "ens160" ; the router interface where the clinet is connected
+GLobal $routerUsr = "harlem1"
+Global $routerPsw = "harlem"
 
 ;============================= Create a file for results======================
 ; Create file in same folder as script
