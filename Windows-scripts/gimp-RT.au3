@@ -21,25 +21,38 @@
 ; QoS
 Local $aRTT[1] = [0] ;,50, 150]
 Local $aLoss[1] = [0] ;,0.05,1] ;packet loss rate, unit is %
-Local $videoDir = "C:\Users\harlem1\Documents\"
-Local $vdieoName= ["COSMOS04.mp4" , "COSMOS04.mp4"] ;"out-1fps.mp4"]
-Local $activity = "video"
-GLobal $routerIP = "10.101.2.1" ; the ip address of the server acting as router and running packet capture
-Global $routerIF = "enp0s9" ; the router interface where the clinet is connected
-GLobal $routerUsr = "fatma"
-Global $routerPsw = "123"
-Local $timeInterval = 3000
+Local $videoDir = "C:\Users\harlem5\Documents\"
+Local $activity = "gimp"
+GLobal $routerIP = "172.28.30.124" ; the ip address of the server acting as router and running packet capture
+Global $routerIF = "ens160" ; the router interface where the clinet is connected
+GLobal $routerUsr = "harlem1"
+Global $routerPsw = "harlem"
+Local $timeInterval = 30000
 Local $picName = "test-pic"
 ;Local $picName2 = "test-pic" ; the image name without the
-Local $clinetIPAddress = "10.101.2.3"
+Local $clinetIPAddress = "172.28.30.9"
 Local $udpPort = 60000
+
+;============================= Create a file for results======================
+; Create file in same folder as script
+Global $sFileName = @ScriptDir &"\" & $activity &"-RT-objective.txt"
+
+; Open file
+Global $hFilehandle = FileOpen($sFileName, $FO_APPEND)
+
+; Prove it exists
+If FileExists($sFileName) Then
+    ;MsgBox($MB_SYSTEMMODAL, "File", "Exists")
+Else
+    MsgBox($MB_SYSTEMMODAL, "File", "Does not exist")
+ EndIf
 
 
 For $i = 0 To UBound($aRTT) - 1
    For $j = 0 To UBound($aLoss) - 1
 
 	  ; start packet capture
-	  ;router_command("start_capture", $videoSpeed[$k])
+	  router_command("start_capture")
 
 	  ;setup UDP socket
 	  SetupUDP($clinetIPAddress, $udpPort)
@@ -48,19 +61,25 @@ For $i = 0 To UBound($aRTT) - 1
 	  ;log time
 	  Local $hTimer = TimerInit() ;begin the timer and store the handler
 	  ;mark start of task with a udp packet
+	  Sleep($timeInterval)
 	  SendPacket("start")
 	  ShellExecute("C:\Program Files\GIMP 2\bin\gimp-2.10.exe","","","",@SW_MAXIMIZE)
 	  Local $hGIMP = WinWaitActive("GNU Image Manipulation Program")
+	  Local $timeDiff = TimerDiff($hTimer)/1000 ; find the time difference from the first call of TImerInit
 	  SendPacket("end")
+	  FileWrite($hFilehandle, $aRTT[$i] & " "& $aLoss[$j] & " " & $timeDiff & " ")
 
 	  Sleep($timeInterval)
 
 	  ; 2) open "open image" window
 	  SendPacket("start")
+	  $hTimer = TimerInit() ;begin the timer and store the handler
 	  Send("^o") ;send ctrl+o to open image
 	  ;search for the image
 	  WinWaitActive("Open Image")
+	  $timeDiff = TimerDiff($hTimer)/1000 ; find the time difference from the first call of TImerInit
 	  SendPacket("end")
+	  FileWrite($hFilehandle, $timeDiff & " ")
 
 	  Sleep($timeInterval)
 
@@ -68,16 +87,21 @@ For $i = 0 To UBound($aRTT) - 1
 	  MouseClick($MOUSE_CLICK_LEFT,31,122,1)
 	  Send($picName)
 	  Send("{ENTER}")
-	  Sleep(1000)
+	  ;Sleep(1000)
+	  Sleep($timeInterval)
 	  MouseClick($MOUSE_CLICK_LEFT,209,121,1)
 	  SendPacket("start")
+	  $hTimer = TimerInit() ;begin the timer and store the handler
 	  Send("{ENTER}")
-	  WinWaitActive("[" & $picName & "] (imported)-1.0 (RGB color 8-bit gamma integer, GIMP built-in sRGB, 1 layer) 2614x2245 – GIMP")
+	  $hGIMP = WinWaitActive("[" & $picName & "] (imported)-1.0 (RGB color 8-bit gamma integer, GIMP built-in sRGB, 1 layer) 2614x2245 – GIMP")
+	  $timeDiff = TimerDiff($hTimer)/1000 ; find the time difference from the first call of TImerInit
 	  SendPacket("end")
+	  FileWrite($hFilehandle, $timeDiff & @CRLF)
 
 	  Sleep($timeInterval)
 
 
+#comments-start
 	  ;4) choose fuzzy select
 	  ;MouseClick($MOUSE_CLICK_LEFT,85,81,1)
 	  Send("u") ;shortcut ot fuzzy select
@@ -89,31 +113,14 @@ For $i = 0 To UBound($aRTT) - 1
       SendPacket("end")
 	  ;deselect
 	  Send("^+a") ;ctrl + shift + a
-
-
-	  ;select
-	  #comments-start
-	  C:\Users\harlem1\Documents\SEEC\Windows-scripts\test-pic.jpg
-
-	  Sleep($timeInterval)
-	  Local $timeDiff = TimerDiff($hTimer) ; find the time difference from the first call of TImerInit
-
-	  WinClose($hVLC)
-
-	  ;MsgBox($MB_OK,"Info","Video finished and it took "& $timeDiff & " ms to finish")
+#comments-end
 
 	  ; stop capture
 	  router_command("stop_capture")
 
-	  ; store the time of the video based on the video speed
-	  If $videoSpeed[$k] = "regular" Then
-		  Global $reg_time = $timeDiff
-	  Else
-		  Global $slow_time = $timeDiff
-	  EndIf
-	;send times for analysis
-	router_command("analyze", "slow", $aRTT[$i] , $aLoss[$j]) ; here the second param doesn't matter
-	#comments-end
+	  ;plot rate
+	  router_command("compute_plot","",$aRTT[$i], $aLoss[$j])
+	   WinClose($hGIMP)
    Next
 Next
 
@@ -158,9 +165,10 @@ Func SendPacket($msg)
     EndIf
 EndFunc
 
+
 Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capture", "stop_capture", "analyze"
 	; open putty
-	ShellExecute("C:\Users\harlem1\Downloads\putty")
+	ShellExecute("C:\Program Files\PuTTY\putty")
 	;ShellExecute($videoDir & $vdieoName)
 	Local $hPutty = WinWaitActive("PuTTY Configuration")
 
@@ -179,7 +187,7 @@ Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capt
 	If $cmd = "start_capture" Then
 
 	  ;run the capture /home/fatma/SEEC/Windows-scripts
-	  Local $command = "sudo sh /home/fatma/SEEC/Windows-scripts/start-tcpdump.sh " & $routerIF & " " & $videoSpeed
+	  Local $command = "sudo sh /home/harlem1/SEEC/Windows-scripts/start-tcpdump.sh " & $routerIF & " " & $videoSpeed
 	  Send($command)
 	  Send("{ENTER}")
 	  Sleep(500)
@@ -194,13 +202,27 @@ Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capt
 	  Send($routerPsw)
 	  Send("{ENTER}")
 
+	ElseIf $cmd = "analyze" Then
+	  $command = "sudo bash SEEC/Windows-scripts/analyze.sh " & $slow_time & " " & $reg_time & " " & $rtt & " " & $loss
+	  Send($command)
+	  Send("{ENTER}")
+	  Sleep(300)
+	  Send($routerPsw)
+	  Send("{ENTER}")
+
+	  ElseIf $cmd = "compute_plot" Then
+	  $command = "sudo bash SEEC/Windows-scripts/compute-thru.sh  capture-1-slow-.pcap" & $rtt & " " & $loss
+	  Send($command)
+	  Send("{ENTER}")
+	  Sleep(300)
+	  Send($routerPsw)
+	  Send("{ENTER}")
 
 	EndIf
 
 	;close putty
 	Sleep(500)
-	Send("exit")
-	Send("{ENTER}")
+	;Send("exit")
+	;Send("{ENTER}")
 
 EndFunc
-
