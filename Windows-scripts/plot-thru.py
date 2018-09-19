@@ -30,5 +30,4 @@ ax2.plot(data2,"r--",linewidth=2.0)
 #ax2.set_ylim(50,75)
 
 plt.savefig(plot_dir + 'RT-gimp-'+file_name+'.png',format="png",bbox_inches='tight')
-plt.savefig('xx-RT-gimp-'+file_name+'.png',format="png",bbox_inches='tight')
 #plt.show()
