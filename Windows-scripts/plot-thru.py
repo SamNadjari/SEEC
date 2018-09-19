@@ -16,7 +16,7 @@ data1, data2 = np.loadtxt(res_dir +'/'+ file_name, delimiter=' ',usecols=(0,1),u
 fig, ax1 = plt.subplots(1)
 ax1.set_xlabel('Time (ms)',fontsize=14)
 ax1.set_ylabel('Rate: Mbits per ms')
-ax1.plot((data1/0.001)*1e6,linewidth=2.0)
+ax1.plot((data1/0.001)/1e6,linewidth=2.0)
 #ax1.annotate('Reject rate', xy=(8, 36), xytext=(8, 35),arrowprops=dict(facecolor='black', shrink=0.05))
 #ax1.tick_params(axis='both', which='major', labelsize=14)
 #ax1.set_ylim(30,50)
