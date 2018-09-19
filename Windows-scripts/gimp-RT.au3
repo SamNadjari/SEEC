@@ -17,17 +17,19 @@
 #include <FontConstants.au3>
 #include <AutoItConstants.au3>
 
+#RequireAdmin ; this required for clumsy to work properlys
+
 ; ============================ Parameters initialization ====================
 ; QoS
-Local $aRTT[1] = [0] ;,50, 150]
-Local $aLoss[1] = [0] ;,0.05,1] ;packet loss rate, unit is %
+Local $aRTT[1] = [20] ;,50, 150]
+Local $aLoss[1] = [1] ;,0.05,1] ;packet loss rate, unit is %
 Local $videoDir = "C:\Users\harlem5\Documents\"
 Local $activity = "gimp"
 GLobal $routerIP = "172.28.30.124" ; the ip address of the server acting as router and running packet capture
 Global $routerIF = "ens160" ; the router interface where the clinet is connected
 GLobal $routerUsr = "harlem1"
 Global $routerPsw = "harlem"
-Local $timeInterval = 30000
+Local $timeInterval = 20000 ;30000
 Local $picName = "test-pic"
 ;Local $picName2 = "test-pic" ; the image name without the
 Local $clinetIPAddress = "172.28.30.9"
@@ -48,8 +50,15 @@ Else
  EndIf
 
 
+;setup clumsy basic param to prepare for network configuration
+Local $hClumsy = Clumsy("", "open", $clinetIPAddress)
+
 For $i = 0 To UBound($aRTT) - 1
    For $j = 0 To UBound($aLoss) - 1
+
+	  ;configure clumsy
+	  Clumsy($hClumsy, "configure","",$aRTT[$i], $aloss[$j])
+	  Clumsy($hClumsy, "start")
 
 	  ; start packet capture
 	  router_command("start_capture")
@@ -120,9 +129,13 @@ For $i = 0 To UBound($aRTT) - 1
 
 	  ;plot rate
 	  router_command("compute_plot","",$aRTT[$i], $aLoss[$j])
-	   WinClose($hGIMP)
+	  WinClose($hGIMP)
+
+	  Clumsy($hClumsy, "stop")
    Next
 Next
+
+WinClose($hClumsy)
 
 
 Func SetupUDP($sIPAddress, $iPort)
@@ -167,6 +180,7 @@ EndFunc
 
 
 Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capture", "stop_capture", "analyze"
+
 	; open putty
 	ShellExecute("C:\Program Files\PuTTY\putty")
 	;ShellExecute($videoDir & $vdieoName)
@@ -211,18 +225,53 @@ Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capt
 	  Send("{ENTER}")
 
 	  ElseIf $cmd = "compute_plot" Then
-	  $command = "sudo bash SEEC/Windows-scripts/compute-thru.sh  capture-1-slow-.pcap" & $rtt & " " & $loss
+	  $command = "sh SEEC/Windows-scripts/compute-thru.sh  capture-1-slow.pcap "  & $clinetIPAddress & " " & $rtt & " " & $loss
 	  Send($command)
-	  Send("{ENTER}")
-	  Sleep(300)
-	  Send($routerPsw)
 	  Send("{ENTER}")
 
 	EndIf
 
 	;close putty
 	Sleep(500)
-	;Send("exit")
-	;Send("{ENTER}")
+	Send("exit")
+	Send("{ENTER}")
 
+EndFunc
+
+Func Clumsy($hWnd, $cmd, $clinetIPAddress="0.0.0.0", $RTT=0, $loss=0)
+
+   If $cmd = "open" Then
+	  ShellExecute("C:\Users\Harlem5\Downloads\clumsy-0.2-win64\clumsy.exe")
+	  $hWnd = WinWaitActive("clumsy 0.2")
+	  ;basic setup
+	  ; clear the filter text filed
+	  Local $filter = "outbound and ip.DstAddr==" & $clinetIPAddress
+	  ControlSetText($hWnd,"", "Edit1", $filter)
+
+	  ; set check box for lag (delay)
+	  ControlClick($hWnd, "","Button4", "left", 1,8,8) ;1 click 8,8 coordinate
+
+	  ;set check box for drop
+	  ControlClick($hWnd, "","Button7", "left", 1,8,8)
+	  Return $hWnd
+
+   ElseIf $cmd = "configure" Then
+	  ;make sure it is active
+	  WinActivate($hWnd)
+
+	  ;set delay
+	  ControlSetText($hWnd,"", "Edit2", $RTT)
+
+	  ;add packet drop
+	  ControlSetText($hWnd,"", "Edit3", $loss)
+
+   ElseIf $cmd = "start" Then
+	  ;click the start button
+	  ControlClick($hWnd, "","Button2", "left", 1,8,8)
+
+   ElseIf $cmd = "stop" Then
+	  ;click the start button
+	  ControlClick($hWnd, "","Button2", "left", 1,8,8)
+
+   EndIf
 EndFunc
