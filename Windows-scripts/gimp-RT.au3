@@ -29,7 +29,7 @@ GLobal $routerIP = "172.28.30.124" ; the ip address of the server acting as rout
 Global $routerIF = "ens160" ; the router interface where the clinet is connected
 GLobal $routerUsr = "harlem1"
 Global $routerPsw = "harlem"
-Local $timeInterval = 20000 ;30000
+Local $timeInterval = 2000 ;30000
 Local $picName = "test-pic"
 ;Local $picName2 = "test-pic" ; the image name without the
 Local $clinetIPAddress = "172.28.30.9"
@@ -110,7 +110,7 @@ For $i = 0 To UBound($aRTT) - 1
 	  Sleep($timeInterval)
 
 
-#comments-start
+
 	  ;4) choose fuzzy select
 	  ;MouseClick($MOUSE_CLICK_LEFT,85,81,1)
 	  Send("u") ;shortcut ot fuzzy select
@@ -122,7 +122,9 @@ For $i = 0 To UBound($aRTT) - 1
       SendPacket("end")
 	  ;deselect
 	  Send("^+a") ;ctrl + shift + a
-#comments-end
+
+	  Sleep(1000)
+
 
 	  ; stop capture
 	  router_command("stop_capture")
@@ -132,10 +134,14 @@ For $i = 0 To UBound($aRTT) - 1
 	  WinClose($hGIMP)
 
 	  Clumsy($hClumsy, "stop")
+
+	  WinClose($hClumsy)
+	  $hClumsy = WinActivate("Quit GIMP")
+	  Send("^d");ctr + d to discard changes
    Next
 Next
 
-WinClose($hClumsy)
+
 
 
 Func SetupUDP($sIPAddress, $iPort)
