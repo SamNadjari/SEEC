@@ -4,7 +4,7 @@
 import sys, os
 import numpy as np
 
-src_IP=sys.argv[1]
+dst_IP=sys.argv[1]
 no_tasks=int(sys.argv[2]) #number of tasks performed in the slow motion test
 pcap=sys.argv[3]
 rtt=sys.argv[4]
@@ -14,7 +14,8 @@ app=sys.argv[6]
 res_dir="/home/harlem1/SEEC/Windows-scripts/results"
 
 #process the pcap file and get the marker packets timestamps
-command="tshark -r "+ pcap + " \"ip.src==" + src_IP + "  and udp.dstport==60000\" | grep \"" + src_IP + " →\" | awk '{print $2}' > " + res_dir + "/filex"
+command="tshark -r "+ pcap + " \"ip.dst==" + dst_IP + "  and udp.dstport==60000\" | grep \" → " +dst_IP + "\" | awk '{print $2}' > " + res_dir + "/filex"
+
 os.system(command)
 ts = np.loadtxt(res_dir +'/filex', delimiter=' ')
 
@@ -27,7 +28,8 @@ for i in range(0,no_tasks*2,2):
 #save results to file
 #change to np array to save file
 rt = np.array(rt)
-file_name = app+"_RT_marker_packets_rtt"+rtt+"_loss_"+loss 
+#file_name = app+"_RT_marker_packets_rtt"+rtt+"_loss_"+loss 
+file_name = app+"_RT_marker_packets"
 f=open(res_dir + '/' + file_name,'ab') #open the file to append to
 np.savetxt(f, rt.reshape(1, rt.shape[0]), fmt="%s") #the reshape function is used to convert the array to row-wise array to be saved as one row in the file
 f.close()
