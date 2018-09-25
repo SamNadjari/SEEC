@@ -21,10 +21,11 @@
 
 ; ============================ Parameters initialization ====================
 ; QoS
-Local $aRTT[1] = [20] ;,50, 150]
+Local $aRTT[1] = [200] ;,50, 150]
+Local $aLoss[1] = [1] ;,0.05,1] ;packet loss rate, unit is %
 Local $aLoss[1] = [1] ;,0.05,1] ;packet loss rate, unit is %
 Local $videoDir = "C:\Users\harlem5\Documents\"
-Local $activity = "gimp"
+Global $app = "gimp"
 GLobal $routerIP = "172.28.30.124" ; the ip address of the server acting as router and running packet capture
 Global $routerIF = "ens160" ; the router interface where the clinet is connected
 GLobal $routerUsr = "harlem1"
@@ -34,10 +35,11 @@ Local $picName = "test-pic"
 ;Local $picName2 = "test-pic" ; the image name without the
 Local $clinetIPAddress = "172.28.30.9"
 Local $udpPort = 60000
+Global $no_tasks = 3
 
 ;============================= Create a file for results======================
 ; Create file in same folder as script
-Global $sFileName = @ScriptDir &"\" & $activity &"-RT-objective.txt"
+Global $sFileName = @ScriptDir &"\" & $app &"-RT-objective.txt"
 
 ; Open file
 Global $hFilehandle = FileOpen($sFileName, $FO_APPEND)
@@ -66,15 +68,18 @@ For $i = 0 To UBound($aRTT) - 1
 	  ;setup UDP socket
 	  SetupUDP($clinetIPAddress, $udpPort)
 
+	  Sleep($timeInterval)
+
       ; 1) open GIMP
 	  ;log time
 	  Local $hTimer = TimerInit() ;begin the timer and store the handler
 	  ;mark start of task with a udp packet
-	  Sleep($timeInterval)
 	  SendPacket("start")
 	  ShellExecute("C:\Program Files\GIMP 2\bin\gimp-2.10.exe","","","",@SW_MAXIMIZE)
 	  Local $hGIMP = WinWaitActive("GNU Image Manipulation Program")
-	  Local $timeDiff = TimerDiff($hTimer)/1000 ; find the time difference from the first call of TImerInit
+	  ;take screenshot
+	  Send("{LWIN}
+	  Local $timeDiff = TimerDiff($hTimer)/1000 ; find the time difference from the first call of TImerInit, unit sec
 	  SendPacket("end")
 	  FileWrite($hFilehandle, $aRTT[$i] & " "& $aLoss[$j] & " " & $timeDiff & " ")
 
@@ -113,24 +118,28 @@ For $i = 0 To UBound($aRTT) - 1
 
 	  ;4) choose fuzzy select
 	  ;MouseClick($MOUSE_CLICK_LEFT,85,81,1)
-	  Send("u") ;shortcut ot fuzzy select
+	  ;Send("u") ;shortcut ot fuzzy select
 	  ;select an area from the picture
-	  MouseClick($MOUSE_CLICK_LEFT,990,393,1)
-      SendPacket("start")
+	  ;MouseClick($MOUSE_CLICK_LEFT,990,393,1)
+      ;SendPacket("start")
 	  ;delete area
-	  Send("{DEL}")
-      SendPacket("end")
+	  ;Send("{DEL}")
+      ;SendPacket("end")
 	  ;deselect
-	  Send("^+a") ;ctrl + shift + a
+	  ;Send("^+a") ;ctrl + shift + a
 
-	  Sleep(1000)
+	  ;Sleep(1000)
 
 
 	  ; stop capture
 	  router_command("stop_capture")
 
 	  ;plot rate
-	  router_command("compute_plot","",$aRTT[$i], $aLoss[$j])
+	  ;router_command("compute_plot","",$aRTT[$i], $aLoss[$j])
+
+	  ;analyze results
+	  router_command("analyze_results","",$aRTT[$i], $aLoss[$j])
+
 	  WinClose($hGIMP)
 
 	  Clumsy($hClumsy, "stop")
@@ -235,11 +244,19 @@ Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capt
 	  Send($command)
 	  Send("{ENTER}")
 
+	  ElseIf $cmd = "analyze_results" Then
+	  $command = "sh SEEC/Windows-scripts/analyze_RT.sh  " & $clinetIPAddress & " " & $rtt & " " & $loss & " " & $no_tasks & " " & $app
+	  Send($command)
+	  Send("{ENTER}")
+
+
 	EndIf
 
 	;close putty
 	Sleep(500)
 	Send("exit")
+	Send("{ENTER}")
+	Send("{ENTER}")
 	Send("{ENTER}")
 
 EndFunc
