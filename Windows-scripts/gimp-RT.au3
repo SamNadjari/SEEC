@@ -19,23 +19,24 @@
 
 #RequireAdmin ; this required for clumsy to work properlys
 
+
+
 ; ============================ Parameters initialization ====================
 ; QoS
-Local $aRTT[1] = [200] ;,50, 150]
-Local $aLoss[1] = [1] ;,0.05,1] ;packet loss rate, unit is %
-Local $aLoss[1] = [1] ;,0.05,1] ;packet loss rate, unit is %
+Local $aRTT[7] = [0,1,2,5,10,50,100] ;,50, 150]
+Local $aLoss[2] = [0,3] ;,0.05,1] ;packet loss rate, unit is %
 Local $videoDir = "C:\Users\harlem5\Documents\"
 Global $app = "gimp"
 GLobal $routerIP = "172.28.30.124" ; the ip address of the server acting as router and running packet capture
 Global $routerIF = "ens160" ; the router interface where the clinet is connected
 GLobal $routerUsr = "harlem1"
 Global $routerPsw = "harlem"
-Local $timeInterval = 3000 ;30000
+Local $timeInterval = 20000 ;30000
 Local $picName = "test-pic"
-;Local $picName2 = "test-pic" ; the image name without the
 Local $clinetIPAddress = "172.28.30.9"
-Local $udpPort = 60000
+Global $udpPort = 60000
 Global $no_tasks = 3
+
 
 ;============================= Create a file for results======================
 ; Create file in same folder as script
@@ -51,7 +52,22 @@ Else
     MsgBox($MB_SYSTEMMODAL, "File", "Does not exist")
  EndIf
 
+;=====================open the app and load the picture to have both in the RAM============
+ShellExecute("C:\Program Files\GIMP 2\bin\gimp-2.10.exe","","","",@SW_MAXIMIZE)
+Local $hGIMP = WinWaitActive("GNU Image Manipulation Program")
+Send("^o") ;send ctrl+o to open image
+;search for the image
+WinWaitActive("Open Image")
+MouseClick($MOUSE_CLICK_LEFT,31,122,1)
+Send($picName)
+Send("{ENTER}")
+Sleep(1000)
+MouseClick($MOUSE_CLICK_LEFT,209,121,1)
+Send("{ENTER}")
+$hGIMP = WinWaitActive("[" & $picName & "] (imported)-1.0 (RGB color 8-bit gamma integer, GIMP built-in sRGB, 1 layer) 2614x2245 – GIMP")
+WinClose($hGIMP)
 
+;================= Start actual test =============================
 ;setup clumsy basic param to prepare for network configuration
 Local $hClumsy = Clumsy("", "open", $clinetIPAddress)
 
@@ -78,7 +94,7 @@ For $i = 0 To UBound($aRTT) - 1
 	  ShellExecute("C:\Program Files\GIMP 2\bin\gimp-2.10.exe","","","",@SW_MAXIMIZE)
 	  Local $hGIMP = WinWaitActive("GNU Image Manipulation Program")
 	  ;take screenshot
-	  Send("{LWIN}
+	  ;Send("{LWIN}
 	  Local $timeDiff = TimerDiff($hTimer)/1000 ; find the time difference from the first call of TImerInit, unit sec
 	  SendPacket("end")
 	  FileWrite($hFilehandle, $aRTT[$i] & " "& $aLoss[$j] & " " & $timeDiff & " ")
@@ -202,7 +218,8 @@ Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capt
 	Local $hPutty = WinWaitActive("PuTTY Configuration")
 
 	;connect to the router linux server
-	Send($routerIP)
+	;Send($routerIP)
+	ControlSend("","","",$routerIP)
 	ControlClick($hPutty, "","Button1", "left", 1,8,8)
 
 	Local $hShell = WinWaitActive($routerIP & " - PuTTY")
@@ -256,8 +273,6 @@ Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capt
 	Sleep(500)
 	Send("exit")
 	Send("{ENTER}")
-	Send("{ENTER}")
-	Send("{ENTER}")
 
 EndFunc
 
@@ -268,7 +283,7 @@ Func Clumsy($hWnd, $cmd, $clinetIPAddress="0.0.0.0", $RTT=0, $loss=0)
 	  $hWnd = WinWaitActive("clumsy 0.2")
 	  ;basic setup
 	  ; clear the filter text filed
-	  Local $filter = "outbound and ip.DstAddr==" & $clinetIPAddress
+	  Local $filter = "outbound and ip.DstAddr==" & $clinetIPAddress & " and udp.DstPort != "& $udpPort
 	  ControlSetText($hWnd,"", "Edit1", $filter)
 
 	  ; set check box for lag (delay)
