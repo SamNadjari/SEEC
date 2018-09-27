@@ -5,19 +5,6 @@ import sys, os
 import numpy as np
 
 
-#==============Function to decide the end of display updates=================
-# a function to check if 10 consecutive packets size < 110, if yes it means no more display updates
-def ten_consec_pckts_small(j,size):
-    x = 0
-    while x < 10: 
-        if size[j] > 110:
-            return False
-        else:
-            x+=1
-            j+=1
-
-    return True
-
 #======================= Main Program ===================
 
 #input arguments
@@ -56,27 +43,24 @@ for i in range(0,len(mk_index),2): #step by 2 because the 2nd marker would be th
 
     start_ts = ts[index]
     sz_temp = 0 #to compute the total size of display updates
-    for j in range(index,len(size)):
-        if size[j] > 110: #which means this packet is a display update packet
+    for j in range(index+1,len(size)):
+        if port[j] != 60000:
             sz_temp+= size[j]
             continue
-        else:
-            if ten_consec_pckts_small(j,size):
-                end_ts = ts[j]
-                resp_time = end_ts - start_ts 
-                print("rt =",resp_time)
-                rt.append(resp_time)
-                sz.append(sz_temp)
-                break
-            else:
-                continue
+        else: #we've reached the second marker packets indicating the end of task
+            end_ts = ts[j]
+            resp_time = end_ts - start_ts 
+            print("rt =",resp_time)
+            rt.append(resp_time)
+            sz.append(sz_temp)
+            break
 
 #save results to file
 #change to np array to save file
 rt = rt + sz #add the byte size of each task to rt array to write both rt and size to one output file
 rt = np.array(rt)
 #file_name = app+"_RT_marker_packets_rtt"+rtt+"_loss_"+loss 
-file_name = app+"_RT_display_updates"
+file_name = app+"_RT_marker_packets_2"
 f=open(res_dir + '/' + file_name,'ab') #open the file to append to
 np.savetxt(f, rt.reshape(1, rt.shape[0]), fmt="%s") #the reshape function is used to convert the array to row-wise array to be saved as one row in the file
 f.close()
