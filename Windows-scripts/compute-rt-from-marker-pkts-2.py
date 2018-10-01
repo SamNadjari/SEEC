@@ -1,5 +1,6 @@
 #This is a python3 code
 #input: dst_IP pcap rtt loss app
+#python3 compute-rt-from-marker-pkts-2.py 172.28.30.9 capture-delay-0-loss-0.pcap 0 0 gimp 5 > x-marker
 
 import sys, os
 import numpy as np
@@ -13,6 +14,7 @@ pcap=sys.argv[2]
 rtt=sys.argv[3]
 loss=sys.argv[4]
 app=sys.argv[5]
+run_no=sys.argv[6]
 
 parsed_pcap="tshark-pckts-parsed"
 res_dir="/home/harlem1/SEEC/Windows-scripts/results"
@@ -37,30 +39,48 @@ for i in range(len(marker_index[0])):
 #find RT for each task
 rt = [rtt, loss] #array for RTs, initialize it with rtt and loss to write the results to a file
 sz = [] #size of the display updates for each task, unit bytes
-
 for i in range(0,len(mk_index),2): #step by 2 because the 2nd marker would be the packetsindicate the end of task, which we don't need
     index = mk_index[i]
+    temp_pckts = []
 
     start_ts = ts[index]
     sz_temp = 0 #to compute the total size of display updates
     for j in range(index+1,len(size)):
         if port[j] != 60000:
+            if size[j] <= 110:
+                continue
+#            print ("ts = ",ts[j])
+#            print ("size = ",size[j])
             sz_temp+= size[j]
+            temp_pckts.append(ts[j])
             continue
         else: #we've reached the second marker packets indicating the end of task
             end_ts = ts[j]
             resp_time = end_ts - start_ts 
-            print("rt =",resp_time)
             rt.append(resp_time)
             sz.append(sz_temp)
             break
+'''
+    temp_pckts = np.asarray(temp_pckts)
+    ts_diff = np.ediff1d(temp_pckts)
+    xx="xx-marker-" + str(index)
+    np.savetxt(xx, ts_diff)
 
+    print("New Task ")
+    print("mean = ", np.mean(ts_diff))
+    print("sd = ", np.std(ts_diff))
+    print("median = ", np.median(ts_diff))
+    print("variance = ", np.var(ts_diff))
+    print("max = ", np.amax(ts_diff))
+    print("min = ", np.amin(ts_diff))
+    print("75th percentile = ", np.percentile(ts_diff,75))
+'''
 #save results to file
 #change to np array to save file
 rt = rt + sz #add the byte size of each task to rt array to write both rt and size to one output file
 rt = np.array(rt)
 #file_name = app+"_RT_marker_packets_rtt"+rtt+"_loss_"+loss 
-file_name = app+"_RT_marker_packets_2"
+file_name = app+"_RT_marker_packets_2_run_"+run_no
 f=open(res_dir + '/' + file_name,'ab') #open the file to append to
 np.savetxt(f, rt.reshape(1, rt.shape[0]), fmt="%s") #the reshape function is used to convert the array to row-wise array to be saved as one row in the file
 f.close()

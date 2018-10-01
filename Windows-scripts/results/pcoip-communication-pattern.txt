@@ -1,0 +1,17 @@
+harlem1@router:~/SEEC/Windows-scripts$ python3 process-pcap-pcoip-communication.py no-display-updates.pcap
+tshark: The file "no-display-updates.pcap" appears to have been cut short in the middle of a packet.
+mean =  0.422785964703
+sd =  0.361257153232
+median =  0.196506
+variance =  0.130506730762
+max =  0.900312
+min =  0.0 ==> because tshark granuality is us but the transmission delay of 110B packet is 0.88us (880 ns) so if two packets sent back to back, the time difference would be 0 since it is measured using us
+75th percentile =  0.8998135
+harlem1@router:~/SEEC/Windows-scripts$ python3 process-pcap-pcoip-communication.py capture-1-slow.pcap
+mean =  0.304844341737
+sd =  0.316761838258
+median =  0.107358
+variance =  0.100338062177
+max =  0.900167
+min =  0.0
+75th percentile =  0.452389
