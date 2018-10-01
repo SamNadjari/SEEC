@@ -23,7 +23,7 @@
 
 ; ============================ Parameters initialization ====================
 ; QoS
-Local $aRTT[7] = [0,1,2,5,10,50,100] ;,50, 150]
+Local $aRTT[1] = [100];0,5,10,50,100] ;,1,2,5,10,50,100] ;,50, 150]
 Local $aLoss[2] = [0,3] ;,0.05,1] ;packet loss rate, unit is %
 Local $videoDir = "C:\Users\harlem5\Documents\"
 Global $app = "gimp"
@@ -36,11 +36,13 @@ Local $picName = "test-pic"
 Local $clinetIPAddress = "172.28.30.9"
 Global $udpPort = 60000
 Global $no_tasks = 3
+Global $runNo = 4
+
 
 
 ;============================= Create a file for results======================
 ; Create file in same folder as script
-Global $sFileName = @ScriptDir &"\" & $app &"-RT-objective.txt"
+Global $sFileName = @ScriptDir &"\" & $app &"-RT-objective-run-no-"& $runNo & ".txt"
 
 ; Open file
 Global $hFilehandle = FileOpen($sFileName, $FO_APPEND)
@@ -71,9 +73,11 @@ WinClose($hGIMP)
 ;setup clumsy basic param to prepare for network configuration
 Local $hClumsy = Clumsy("", "open", $clinetIPAddress)
 
-For $i = 0 To UBound($aRTT) - 1
-   For $j = 0 To UBound($aLoss) - 1
+;For $i = 0 To UBound($aRTT) - 1
+;   For $j = 0 To UBound($aLoss) - 1
 
+For $j = 0 To UBound($aLoss) - 1
+   For $i = 0 To UBound($aRTT) - 1
 	  ;configure clumsy
 	  Clumsy($hClumsy, "configure","",$aRTT[$i], $aloss[$j])
 	  Clumsy($hClumsy, "start")
@@ -262,7 +266,7 @@ Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capt
 	  Send("{ENTER}")
 
 	  ElseIf $cmd = "analyze_results" Then
-	  $command = "sh SEEC/Windows-scripts/analyze_RT.sh  " & $clinetIPAddress & " " & $rtt & " " & $loss & " " & $no_tasks & " " & $app
+	  $command = "sh SEEC/Windows-scripts/analyze_RT.sh  " & $clinetIPAddress & " " & $rtt & " " & $loss & " " & $no_tasks & " " & $app & " " & $runNo
 	  Send($command)
 	  Send("{ENTER}")
 
