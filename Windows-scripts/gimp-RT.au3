@@ -16,6 +16,7 @@
 #include <ButtonConstants.au3>
 #include <FontConstants.au3>
 #include <AutoItConstants.au3>
+#include <ScreenCapture.au3>
 
 #RequireAdmin ; this required for clumsy to work properlys
 
@@ -23,10 +24,10 @@
 
 ; ============================ Parameters initialization ====================
 ; QoS
-Local $aRTT[1] = [100];0,5,10,50,100] ;,1,2,5,10,50,100] ;,50, 150]
+Local $aRTT[3] = [0,50,100] ;,1,2,5,10,50,100] ;,50, 150]
 Local $aLoss[2] = [0,3] ;,0.05,1] ;packet loss rate, unit is %
-Local $videoDir = "C:\Users\harlem5\Documents\"
 Global $app = "gimp"
+Local $logDir = "C:\Users\Harlem5\SEEC\Windows-scripts"
 GLobal $routerIP = "172.28.30.124" ; the ip address of the server acting as router and running packet capture
 Global $routerIF = "ens160" ; the router interface where the clinet is connected
 GLobal $routerUsr = "harlem1"
@@ -36,13 +37,13 @@ Local $picName = "test-pic"
 Local $clinetIPAddress = "172.28.30.9"
 Global $udpPort = 60000
 Global $no_tasks = 3
-Global $runNo = 4
+Global $runNo = 5
 
 
 
 ;============================= Create a file for results======================
 ; Create file in same folder as script
-Global $sFileName = @ScriptDir &"\" & $app &"-RT-objective-run-no-"& $runNo & ".txt"
+Global $sFileName = $logDir &"\results\" & $app &"-RT-autoit-run-no-"& $runNo & ".txt"
 
 ; Open file
 Global $hFilehandle = FileOpen($sFileName, $FO_APPEND)
@@ -98,7 +99,8 @@ For $j = 0 To UBound($aLoss) - 1
 	  ShellExecute("C:\Program Files\GIMP 2\bin\gimp-2.10.exe","","","",@SW_MAXIMIZE)
 	  Local $hGIMP = WinWaitActive("GNU Image Manipulation Program")
 	  ;take screenshot
-	  ;Send("{LWIN}
+	  $file_name = "task-1-capture-rtt-" & $aRTT[$i] & "-loss-" & $aloss[$j]
+	  _ScreenCapture_Capture($logDir & "\screenShots\" & $file_name & ".png", "","",-1,-1, False)
 	  Local $timeDiff = TimerDiff($hTimer)/1000 ; find the time difference from the first call of TImerInit, unit sec
 	  SendPacket("end")
 	  FileWrite($hFilehandle, $aRTT[$i] & " "& $aLoss[$j] & " " & $timeDiff & " ")
@@ -111,6 +113,9 @@ For $j = 0 To UBound($aLoss) - 1
 	  Send("^o") ;send ctrl+o to open image
 	  ;search for the image
 	  WinWaitActive("Open Image")
+	  ;take screenshot
+	  $file_name = "task-2-capture-rtt-" & $aRTT[$i] & "-loss-" & $aloss[$j]
+	  _ScreenCapture_Capture($logDir & "\screenShots\" & $file_name & ".png", "","",-1,-1, False)
 	  $timeDiff = TimerDiff($hTimer)/1000 ; find the time difference from the first call of TImerInit
 	  SendPacket("end")
 	  FileWrite($hFilehandle, $timeDiff & " ")
@@ -128,6 +133,9 @@ For $j = 0 To UBound($aLoss) - 1
 	  $hTimer = TimerInit() ;begin the timer and store the handler
 	  Send("{ENTER}")
 	  $hGIMP = WinWaitActive("[" & $picName & "] (imported)-1.0 (RGB color 8-bit gamma integer, GIMP built-in sRGB, 1 layer) 2614x2245 – GIMP")
+	  ;take screenshot
+	  $file_name = "task-3-capture-rtt-" & $aRTT[$i] & "-loss-" & $aloss[$j]
+	  _ScreenCapture_Capture($logDir & "\screenShots\" & $file_name & ".png", "","",-1,-1, False)
 	  $timeDiff = TimerDiff($hTimer)/1000 ; find the time difference from the first call of TImerInit
 	  SendPacket("end")
 	  FileWrite($hFilehandle, $timeDiff & @CRLF)
