@@ -24,7 +24,7 @@
 
 ; ============================ Parameters initialization ====================
 ; QoS
-Local $aRTT[7] = [0,1,2,5,10,50,100] ;,50, 150]
+Local $aRTT[2] = [0,1];,2,5,10,50,100] ;,50, 150]
 Local $aLoss[2] = [0,3] ;,0.05,1] ;packet loss rate, unit is %
 Global $app = "gimp"
 Local $logDir = "C:\Users\Harlem5\SEEC\Windows-scripts"
@@ -37,7 +37,7 @@ Local $picName = "test-pic"
 Local $clinetIPAddress = "172.28.30.9"
 Global $udpPort = 60000
 Global $no_tasks = 3
-Global $runNo = 7
+Global $runNo = 9
 
 
 
