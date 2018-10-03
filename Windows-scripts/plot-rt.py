@@ -24,7 +24,7 @@ rt_m_1, rt_m_2, rt_m_3, byt_m_1, byt_m_2, byt_m_3 = np.loadtxt(res_dir +'/' + fi
 file_name = app + "_RT_display_updates"
 rt_d_1, rt_d_2, rt_d_3, byt_d_1, byt_d_2, byt_d_3 = np.loadtxt(res_dir +'/' + file_name, delimiter=' ',usecols=(2,3,4,5,6,6),unpack=True)
 
-#===================Parse data by Loss rate=========================
+#===================Parse data by Loss rate and tasks=========================
 loss_0_ind = np.where(loss==0)
 loss_3_ind = np.where(loss==3)
 
@@ -140,12 +140,13 @@ plt.savefig(plot_dir + '/RT-'+app+'-task1.png',format="png",bbox_inches='tight')
 fig, ax1 = plt.subplots(1)
 ax1.set_xlabel('log RTT (ms)',fontsize=14)
 ax1.set_ylabel(app+' load time (sec)')
-ax1.plot(rtt,rt_a_2_loss_0,'bo-',linewidth=2.0,markersize=10)
-ax1.plot(rtt,rt_a_2_loss_3,'go-',linewidth=2.0,markersize=10)
-ax1.plot(rtt,rt_m_2_loss_0,'bx-',linewidth=2.0,markersize=10)
-ax1.plot(rtt,rt_m_2_loss_3,'gx-',linewidth=2.0,markersize=10)
-ax1.plot(rtt,rt_d_2_loss_0,'b*-',linewidth=2.0,markersize=10)
-ax1.plot(rtt,rt_d_2_loss_3,'g*-',linewidth=2.0,markersize=10)
+ax1.plot(rtt,rt_a_2_loss_0,'bo-',linewidth=2.0,markersize=10,label = 'Autoit, loss = 0%')
+ax1.plot(rtt,rt_a_2_loss_3,'go-',linewidth=2.0,markersize=10,label = 'Autoit, loss = 3%')
+ax1.plot(rtt,rt_m_2_loss_0,'bx-',linewidth=2.0,markersize=10,label = 'Marker, loss = 0%')
+ax1.plot(rtt,rt_m_2_loss_3,'gx-',linewidth=2.0,markersize=10,label = 'Marker, loss = 3%')
+ax1.plot(rtt,rt_d_2_loss_0,'b*-',linewidth=2.0,markersize=10,label = 'Display, loss = 0%')
+ax1.plot(rtt,rt_d_2_loss_3,'g*-',linewidth=2.0,markersize=10,label = 'Display, loss = 3%')
+ax1.legend(loc='upper left',ncol=3,bbox_to_anchor=(0.1,1.15))
 
 ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 ax2.set_ylabel('Display Update Size (Bytes)')  # we already handled the x-label with ax1
@@ -153,6 +154,7 @@ ax2.plot(rtt,byt_m_2_loss_0,'bx--',linewidth=2.0,markersize=10)
 ax2.plot(rtt,byt_m_2_loss_3,'gx--',linewidth=2.0,markersize=10)
 ax2.plot(rtt,byt_d_2_loss_0,'b*--',linewidth=2.0,markersize=10)
 ax2.plot(rtt,byt_d_2_loss_3,'g*--',linewidth=2.0,markersize=10)
+
 
 plt.savefig(plot_dir + '/RT-'+app+'-task2.png',format="png",bbox_inches='tight')
 plt.show()

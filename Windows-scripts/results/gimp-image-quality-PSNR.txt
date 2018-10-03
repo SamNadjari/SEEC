@@ -1,1 +1,6 @@
-100 1 38.1585
+100 3 28.7353 Task1
+50 0 28.6394 Task1
+50 0 inf Task2
+100 3 inf Task2
+100 3 inf Task3
+50 0 inf Task3

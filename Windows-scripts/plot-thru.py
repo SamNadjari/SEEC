@@ -25,9 +25,12 @@ ax1.plot((data1/0.001)/1e6,linewidth=2.0)
 ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 ax2.set_ylabel('Marker packets')  # we already handled the x-label with ax1
 ax2.plot(data2,"r--",linewidth=2.0)
+#ax2.axvline(x=(7.749935+20.561228)*1e3,color="y",linewidth=2.0)
+#ax2.axvline(x=(0.827991+43.968891)*1e3,color="y",linewidth=2.0)
+#ax2.axvline(x=(2.057551+85.389765)*1e3,color="y",linewidth=2.0)
 #ax2.annotate('Utilization', xy=(4, 46), xytext=(4, 42),arrowprops=dict(facecolor='black', shrink=0.05))
 #ax2.tick_params(axis='both', which='major', labelsize=14)
 #ax2.set_ylim(50,75)
 
 plt.savefig(plot_dir + 'RT-gimp-'+file_name+'.png',format="png",bbox_inches='tight')
-#plt.show()
+plt.show()

@@ -97,7 +97,7 @@ rt = np.array(rt)
 #file_name = app+"_RT_marker_packets_rtt"+rtt+"_loss_"+loss 
 file_name = app+"_RT_display_updates_run_"+run_no
 f=open(res_dir + '/' + file_name,'ab') #open the file to append to
-#np.savetxt(f, rt.reshape(1, rt.shape[0]), fmt="%s") #the reshape function is used to convert the array to row-wise array to be saved as one row in the file
+np.savetxt(f, rt.reshape(1, rt.shape[0]), fmt="%s") #the reshape function is used to convert the array to row-wise array to be saved as one row in the file
 f.close()
 
 #delete pcap and parsed file
