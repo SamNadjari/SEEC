@@ -37,7 +37,7 @@ Local $picName = "test-pic"
 Local $clinetIPAddress = "172.28.30.9"
 Global $udpPort = 60000
 Global $no_tasks = 3
-Global $runNo = 4
+Global $runNo = 7
 
 
 
@@ -172,11 +172,13 @@ For $j = 0 To UBound($aLoss) - 1
 
 	  Clumsy($hClumsy, "stop")
 
-	  WinClose($hClumsy)
-	  $hClumsy = WinActivate("Quit GIMP")
+	  $hGimp = WinActivate("Quit GIMP")
 	  Send("^d");ctr + d to discard changes
    Next
 Next
+
+;close clumsy
+WinClose($hClumsy)
 
 
 
