@@ -9,7 +9,7 @@ import numpy as np
 # a function to check if 10 consecutive packets size < 110, if yes it means no more display updates
 def ten_consec_pckts_small(j,size):
     x = 0
-    while x < 10: 
+    while x < 10 and j<len(size):  
         if size[j] > 110:
             return False
         else:
