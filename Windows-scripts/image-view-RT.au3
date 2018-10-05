@@ -25,10 +25,11 @@
 
 ; ============================ Parameters initialization ====================
 ; QoS
-Local $aRTT[7] = [0,1,2,5,10,50,100] ;,50, 150]
-Local $aLoss[2] = [0,3] ;,0.05,1] ;packet loss rate, unit is %
+Local $aRTT[1] = [200];,50,100];1,2,5,10,50,100] ;,50, 150]
+Local $aLoss[1] = [10];,3] ;,0.05,1] ;packet loss rate, unit is %
 Global $app = "ImageView"
 Local $logDir = "C:\Users\Harlem5\SEEC\Windows-scripts"
+local $picsDir = $logDir & "\Pics2\"
 GLobal $routerIP = "172.28.30.124" ; the ip address of the server acting as router and running packet capture
 Global $routerIF = "ens160" ; the router interface where the clinet is connected
 GLobal $routerUsr = "harlem1"
@@ -38,7 +39,7 @@ Local $picName = "test-pic"
 Local $clinetIPAddress = "172.28.30.9"
 Global $udpPort = 60000
 Global $no_tasks = 6
-Global $runNo = 4
+Global $runNo = 2
 
 
 
@@ -57,13 +58,13 @@ Else
  EndIf
 
  ;=====================open the app and load all pic to RAM============
-ShellExecute($logDir & "\Pics\1.jpg","","","",@SW_MAXIMIZE)
-Local $hImage = WinWaitActive("Photos")
-WinClose($hImage)
-Local $i = 2
+;ShellExecute($logDir & "\Pics\1.jpg","","","",@SW_MAXIMIZE)
+;Local $hImage = WinWaitActive("Photos")
+;WinClose($hImage)
+Local $i = 1
 while  $i <= $no_tasks
    ;Send('{RIGHT}') ;send right arrrow to move to next pic
-   ShellExecute($logDir & "\Pics\"&$i&".jpg","","","",@SW_MAXIMIZE)
+   ShellExecute($picsDir &$i&".jpg","","","",@SW_MAXIMIZE)
    Local $hImage = WinWaitActive("Photos")
    ;MsgBox($MB_SYSTEMMODAL, "File", "pic opened")
    WinClose($hImage)
@@ -89,31 +90,63 @@ For $j = 0 To UBound($aLoss) - 1
 	  ;setup UDP socket
 	  SetupUDP($clinetIPAddress, $udpPort)
 
+	  Sleep($timeInterval)
+
+	  ;load the first image
+	  ;log time
+	  Local $hTimer = TimerInit() ;begin the timer and store the handler
+	  ;mark start of task with a udp packet
+	  SendPacket("start")
+
+	  ShellExecute($picsDir & "1.jpg","","","",@SW_MAXIMIZE)
+	  Local $hImage = WinWaitActive("Photos")
+
+	  $file_name = $app & "-task-1-capture-rtt-" & $aRTT[$i] & "-loss-" & $aloss[$j]
+	  _ScreenCapture_Capture($logDir & "\screenShots\" & $file_name & ".png", "","",-1,-1, False)
+	  Local $timeDiff = TimerDiff($hTimer)/1000 ; find the time difference from the first call of TImerInit, unit sec
+	  SendPacket("end")
+	  FileWrite($hFilehandle, $aRTT[$i] & " "& $aLoss[$j] & " " & $timeDiff & " ")
+	  Sleep($timeInterval)
+	  WinClose($hImage)
+
 
 	  ;load images one by one with sleep in between
-	  Local $k = 1
+	  Local $k = 2
 	  while  $k <= $no_tasks
+
+		 ;log time
+		 Local $hTimer = TimerInit() ;begin the timer and store the handler
+		 ;mark start of task with a udp packet
+		 SendPacket("start")
+
+		 ShellExecute($picsDir &$k&".jpg","","","",@SW_MAXIMIZE)
+		 $hImage = WinWaitActive("Photos")
+
+		 Local $timeDiff = TimerDiff($hTimer)/1000 ; find the time difference from the first call of TImerInit, unit sec
+		 $file_name = $app & "-task-"&$k&"-capture-rtt-" & $aRTT[$i] & "-loss-" & $aloss[$j]
+		 _ScreenCapture_Capture($logDir & "\screenShots\" & $file_name & ".png", "","",-1,-1, False)
+		 SendPacket("end")
+		 FileWrite($hFilehandle, $timeDiff & " ")
+
 		 Sleep($timeInterval)
-		 ShellExecute($logDir & "\Pics\"&$k&".jpg","","","",@SW_MAXIMIZE)
-		 Local $hImage = WinWaitActive("Photos")
-		 ;MsgBox($MB_SYSTEMMODAL, "File", "pic opened")
 		 WinClose($hImage)
 		 $k = $k + 1
+
 	  WEnd
 
+	  FileWrite($hFilehandle, @CRLF) ;add new line to the file
 	  ;stop capture
 	  router_command("stop_capture")
-
-	  ;plot rate
-	  ;router_command("compute_plot","",$aRTT[$i], $aLoss[$j])
 
 	  ;analyze results
 	  router_command("analyze_results","",$aRTT[$i], $aLoss[$j])
 
 	  Clumsy($hClumsy, "stop")
-	  WinClose($hClumsy)
+
    Next
 Next
+
+ WinClose($hClumsy)
 
 
 
