@@ -19,7 +19,7 @@ run_no=sys.argv[6]
 
 parsed_pcap="tshark-pckts-parsed"
 res_dir="/home/harlem1/SEEC/Windows-scripts/results"
-th_time = 1 #0.500 #threshhold interarrival time to represent new update (unit sec)
+th_time = 0.500 #threshhold interarrival time to represent new update (unit sec)
 #log_dir="/home/harlem1/SEEC/Windows-scripts"
 
 #====================Process PCAP==========================
