@@ -1,6 +1,6 @@
 #This is a python3 code
-#input: dst_IP pcap rtt loss app run_no
-#python3 compute-rt-from-display-updates.py 172.28.30.9 capture-1-slow.pcap 200 10 imgeView 13
+
+#This plot find the mean rt and bytes of xx runs, and plot in the x-axis: RTT, two y-axeses RT and bytes, and many lines each for specific loss rate. It produce one plot for each loaded image (or performed task)
 
 import sys, os
 import numpy as np
