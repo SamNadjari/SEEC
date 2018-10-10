@@ -9,7 +9,7 @@ runNo=$6
 dir=/home/harlem1/SEEC/Windows-scripts
 
 #plot marker and rate
-sh $dir/compute-thru.sh capture-1-slow.pcap $clientIP $rtt $loss $dir $runNo $app
+#sh $dir/compute-thru.sh capture-1-slow.pcap $clientIP $rtt $loss $dir $runNo $app
 
 #find RT from marker packets
 #python3 $dir/compute-rt-from-marker-pkts.py $clientIP $no_tasks $dir/capture-1-slow.pcap $rtt $loss $app 
