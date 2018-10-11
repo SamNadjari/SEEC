@@ -12,9 +12,9 @@ import matplotlib.pyplot as plt
 rtt=[0,20,50,100,200]
 loss=[0,3,5]
 app="ImageView"
-total_runs=10
+total_runs=23
 method=["display_updates_2"] #["autoit","display_updates","display_updates_2"] #"RT_marker_packets_2"
-run_no=16
+run_no=17
 no_tasks=6
 pixels_count = [18675,24639,129190,309237,563443,733950] #no of unique pixels in each image
 
@@ -56,6 +56,8 @@ for l in loss_uniq:
     temp1 = "loss_" + str(l) 
     x = np.where(loss==l)
     globals()[temp1] = np.intersect1d(x,rtt_0)
+    total_runs=len(globals()[temp1])
+    print("total_runs_",total_runs)
     #print("indices, " ,temp1,"  = ",globals()[temp1]) 
     #convert it to a list structure to easily access elemts in a loop
     temp2 = "loss_" + str(l) + "_index"
@@ -67,7 +69,7 @@ for l in loss_uniq:
     for i in range(len(globals()[temp1])):
         globals()[temp2].append(globals()[temp1][i])
 
-#create arrays for each 
+#create arrays based on method, loss, and task(or image)
 for meth in method:
     for i in range(no_tasks):
         for l in loss_uniq:
