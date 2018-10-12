@@ -84,13 +84,20 @@ for meth in method:
 
 #append values to the arrays based on loss values
 #each image will hav xx (based on the total_runs) value for each loss rate
+#also find upper and lower values for error bar for each point
+z=1.96 # fro error bar
 for meth in method:
     for l in loss_uniq:
         #create arrays to hold the mean value of rt for each image based on loss value (each array withh have the mean of each image as one row)
         temp5 = "rt_"+meth+"_loss_" + str(l) + "_mean"
         temp6 = "by_"+meth+"_loss_" + str(l) + "_mean"
+        error_rt = "rt_"+meth+"_loss_" + str(l) + "_error"
+        error_by = "by_"+meth+"_loss_" + str(l) + "_error"
         globals()[temp5] = []
         globals()[temp6] = []
+        globals()[error_rt] = [] #for error bar
+        globals()[error_by] = [] #for error bar
+
         for i in range(no_tasks):
             rttx = []
             index_array = "loss_" + str(l) + "_index"
@@ -109,6 +116,9 @@ for meth in method:
             if meth != "autoit": 
                 globals()[temp6].append(np.mean(globals()[temp3]))
             #print("temp5, ",temp5," ",globals()[temp5])
+
+        #find error bar
+
 
 #=================================Plot======================================
 
