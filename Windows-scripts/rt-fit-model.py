@@ -5,6 +5,7 @@ import sys, os
 import numpy as np
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from sklearn import linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 
@@ -46,6 +47,7 @@ for meth in method:
 
 #===================Model fitting======================
 
+#--------------------Linear regression----------------------
 for meth in method:
     temp2_x = "data_"+meth+"_x" #array name for features
     temp3_y = "data_"+meth+"_y" #array name for output (RT)
@@ -65,7 +67,38 @@ for meth in method:
 
     globals()[temp2_x] = np.asarray(globals()[temp2_x])
     # Plot outputs
+    #plt.scatter(globals()[temp2_x][:,2], diabetes_y_pred,  color='black')
+    #plt.plot(globals()[temp2_x][:,2], diabetes_y_pred, color='blue', linewidth=3)
+    #fig = plt.figure()
+    #ax = fig.add_subplot(111, projection='3d')
+    #ax.scatter(globals()[temp2_x][:,1],globals()[temp2_x][:,2],diabetes_y_pred)
+    #ax.plot_surface(globals()[temp2_x][:,1],globals()[temp2_x][:,2],diabetes_y_pred)
+
+    #plt.show()
+
+#---------------------Bytes and RT linear regression model----------------
+'''
+for meth in method:
+    temp2_x = "data_"+meth+"_x" #array name for features
+    temp3_y = "data_"+meth+"_y" #array name for output (RT)
+
+    globals()[temp2_x] = np.asarray(globals()[temp2_x])
+    reg = linear_model.LinearRegression()
+    reg.fit (globals()[temp2_x][:,2],globals()[temp3_y])
+
+    # Make predictions using the testing set
+    diabetes_y_pred = reg.predict(globals()[temp2_x][:,2])
+    # The coefficients
+    print('Coefficients: \n', reg.coef_)
+    # The mean squared error
+    print("Mean squared error: %.2f"
+          % mean_squared_error(globals()[temp3_y], diabetes_y_pred))
+    # Explained variance score: 1 is perfect prediction
+    print('Variance score: %.2f' % r2_score(globals()[temp3_y], diabetes_y_pred))
+
+    # Plot outputs
     plt.scatter(globals()[temp2_x][:,2], diabetes_y_pred,  color='black')
-#    plt.plot(globals()[temp2_x][:,2], diabetes_y_pred, color='blue', linewidth=3)
+    plt.plot(globals()[temp2_x][:,2], diabetes_y_pred, color='blue', linewidth=3)
 
     plt.show()
+'''

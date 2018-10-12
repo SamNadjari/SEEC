@@ -1,5 +1,6 @@
 #Plot RT and Bytes
-
+#this is not general plot, it is based on specific number of tasks and loss value
+#the general script for plotting is :find-plot-rt-mean.py and find-plot-rt-mean-x-axis-image.py  
 import matplotlib
 matplotlib.use('Agg') #so that we don't get no $Display variable error when running the script over ssh connection
 
