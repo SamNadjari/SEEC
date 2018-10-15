@@ -1,10 +1,12 @@
 #This is a python3 code
 #plot where the x axis is the image unique pixels
+#error bar is added to the plot
 
 import sys, os
 import numpy as np
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
+import math
 
 
 #=====================Initialize parameters===============
@@ -14,7 +16,7 @@ loss=[0,3,5]
 app="ImageView"
 total_runs=23
 method=["display_updates_2"] #["autoit","display_updates","display_updates_2"] #"RT_marker_packets_2"
-run_no=17
+run_no="18_copy"
 no_tasks=6
 pixels_count = [18675,24639,129190,309237,563443,733950] #no of unique pixels in each image
 
@@ -91,12 +93,16 @@ for meth in method:
         #create arrays to hold the mean value of rt for each image based on loss value (each array withh have the mean of each image as one row)
         temp5 = "rt_"+meth+"_loss_" + str(l) + "_mean"
         temp6 = "by_"+meth+"_loss_" + str(l) + "_mean"
+        var_rt = "rt_"+meth+"_loss_" + str(l) + "_var"
+        var_by = "by_"+meth+"_loss_" + str(l) + "_var"
         error_rt = "rt_"+meth+"_loss_" + str(l) + "_error"
         error_by = "by_"+meth+"_loss_" + str(l) + "_error"
         globals()[temp5] = []
         globals()[temp6] = []
         globals()[error_rt] = [] #for error bar
         globals()[error_by] = [] #for error bar
+        globals()[var_rt] = [] #for variance to compute error bar
+        globals()[var_by] = []
 
         for i in range(no_tasks):
             rttx = []
@@ -111,13 +117,28 @@ for meth in method:
                     temp4 = "by_"+meth+"_"+str(i)
                     globals()[temp3].append(globals()[temp4][index])
         #print("temp1, ",temp1," ",globals()[temp1])
-            #find the mean and add it to an array that have all images in one row
+            #find the mean and add it to an array that have all images in one row, also find var for error bar
             globals()[temp5].append(np.mean(globals()[temp1]))
+            globals()[var_rt].append(np.var(globals()[temp1]))
             if meth != "autoit": 
                 globals()[temp6].append(np.mean(globals()[temp3]))
-            #print("temp5, ",temp5," ",globals()[temp5])
+                globals()[var_by].append(np.var(globals()[temp3]))
 
-        #find error bar
+        #find error bar: Standared Error (SE) = var/sqrt(n), upper limit = mean + SE*z
+        #change it to numpy array
+        globals()[error_rt] = np.asarray(globals()[error_rt])
+        globals()[error_by] = np.asarray(globals()[error_by])
+        globals()[var_rt] = np.asarray(globals()[var_rt])
+        globals()[var_by] = np.asarray(globals()[var_by])
+        globals()[temp5] = np.asarray(globals()[temp5])
+        globals()[temp6] = np.asarray(globals()[temp6])
+        #compute error bar
+        globals()[error_rt] = (globals()[var_rt]/ math.sqrt(total_runs))
+        if meth != "autoit":
+            globals()[error_by] = (globals()[var_by]/ math.sqrt(total_runs))
+        #globals()[error_rt] = globals()[temp5] + (globals()[temp6]/ math.sqrt(total_runs))
+        print(error_by," ",globals()[error_by])
+        
 
 
 #=================================Plot======================================
@@ -133,7 +154,10 @@ for meth in method:
     col_index = 0 #index to assign differnt colors for lines
     for l in loss_uniq:
         temp5 = "rt_"+meth+"_loss_" + str(l) + "_mean"
-        ax1.plot(pixels_count,globals()[temp5],color=colors[col_index],marker=markers[col_index],linewidth=2.0,markersize=10,label = meth+', loss = '+str(l)+"%")
+        error_rt = "rt_"+meth+"_loss_" + str(l) + "_error"
+
+        #ax1.plot(pixels_count,globals()[temp5],color=colors[col_index],marker=markers[col_index],linewidth=2.0,markersize=10,label = meth+', loss = '+str(l)+"%")
+        ax1.errorbar(pixels_count,globals()[temp5], yerr=globals()[error_rt],color=colors[col_index] ,linewidth=2.0,markersize=10,label = meth+', loss = '+str(l)+"%")
         col_index = col_index + 1
 
 #create anothor axis for number of bytes
@@ -144,14 +168,19 @@ for meth in method:
     for l in loss_uniq:
         if meth != "autoit":
             temp6 = "by_"+meth+"_loss_" + str(l) + "_mean"
-            ax2.plot(pixels_count,globals()[temp6],color=colors[col_index],marker=markers[col_index],linestyle='dashed',linewidth=2.0,markersize=10,label = meth+',bytes, loss = '+str(l)+"%")
+            error_by = "by_"+meth+"_loss_" + str(l) + "_error"
+    #        ax2.plot(pixels_count,globals()[temp6],color=colors[col_index],marker=markers[col_index],linestyle='dashed',linewidth=2.0,markersize=10,label = meth+',bytes, loss = '+str(l)+"%")
+            ax2.errorbar(pixels_count,globals()[temp6], yerr=globals()[error_by],color=colors[col_index], linestyle='dashed',linewidth=2.0,markersize=10,label = meth+',bytes, loss = '+str(l)+"%")
+            print(error_by," ",globals()[error_by])
 
         col_index = col_index + 1
 
 ax1.legend(loc='upper left',ncol=3,bbox_to_anchor=(-0.5,1.18))
 ax2.legend(loc='upper left',ncol=3,bbox_to_anchor=(-0.5,-0.1))
+
+plt.show()
     #save the plot for each image
-plt.savefig(plot_dir + '/' +plot_name,format="png",bbox_inches='tight')
+#plt.savefig(plot_dir + '/' +plot_name,format="png",bbox_inches='tight')
 #plt.close()
 '''        
 #===============================Save Results=========================
