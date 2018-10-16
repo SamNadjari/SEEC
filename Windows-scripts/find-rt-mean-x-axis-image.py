@@ -14,13 +14,14 @@ loss=[0,3,5]
 app="ImageView"
 total_runs=23
 method=["display_updates_2"] #["autoit","display_updates","display_updates_2"] #"RT_marker_packets_2"
+leg_title=["DUT"] #,"RT-Autoit", "RT-marker"] #the name to use for legend
 run_no=17
 no_tasks=6
 pixels_count = [18675,24639,129190,309237,563443,733950] #no of unique pixels in each image
 
 res_dir="/home/harlem1/SEEC/Windows-scripts/results"
 plot_dir='/home/harlem1/SEEC/Windows-scripts/plots/new-mean'
-plot_name='/mean-RT-image-x-axis-'+app+'-total-runs-'+str(total_runs)+'-run-'+str(run_no)+'.png'
+#plot_name='/mean-RT-image-x-axis-'+app+'-total-runs-'+str(total_runs)+'-run-'+str(run_no)+'.png'
 
 #===================Read data======================
 
@@ -113,6 +114,8 @@ for meth in method:
 #=================================Plot======================================
 
 #pixels_count = [] #no of unique pixels in each image
+plot_name='/mean-RT-image-x-axis-'+app+'-total-runs-'+str(total_runs)+'-run-'+str(run_no)+'.png'
+
 colors = cm.rainbow(np.linspace(0, 7, 20))
 markers = ['^','s','o','*','x','D','+']
 fig, ax1 = plt.subplots(1)
@@ -123,7 +126,7 @@ for meth in method:
     col_index = 0 #index to assign differnt colors for lines
     for l in loss_uniq:
         temp5 = "rt_"+meth+"_loss_" + str(l) + "_mean"
-        ax1.plot(pixels_count,globals()[temp5],color=colors[col_index],marker=markers[col_index],linewidth=2.0,markersize=10,label = meth+', loss = '+str(l)+"%")
+        ax1.plot(pixels_count,globals()[temp5],color=colors[col_index],marker=markers[col_index],linewidth=2.0,markersize=10,label = leg_title[0]+', loss = '+str(l)+"%")
         col_index = col_index + 1
 
 #create anothor axis for number of bytes
@@ -134,12 +137,12 @@ for meth in method:
     for l in loss_uniq:
         if meth != "autoit":
             temp6 = "by_"+meth+"_loss_" + str(l) + "_mean"
-            ax2.plot(pixels_count,globals()[temp6],color=colors[col_index],marker=markers[col_index],linestyle='dashed',linewidth=2.0,markersize=10,label = meth+',bytes, loss = '+str(l)+"%")
+            ax2.plot(pixels_count,globals()[temp6],color=colors[col_index],marker=markers[col_index],linestyle='dashed',linewidth=2.0,markersize=10,label = 'Bytes, loss = '+str(l)+"%")
 
         col_index = col_index + 1
 
-ax1.legend(loc='upper left',ncol=3,bbox_to_anchor=(-0.5,1.18))
-ax2.legend(loc='upper left',ncol=3,bbox_to_anchor=(-0.5,-0.1))
+ax1.legend(loc='upper left',ncol=3,bbox_to_anchor=(-0.2,1.18))
+ax2.legend(loc='upper left',ncol=3,bbox_to_anchor=(-0.2,-0.1))
     #save the plot for each image
 plt.savefig(plot_dir + '/' +plot_name,format="png",bbox_inches='tight')
 #plt.close()
