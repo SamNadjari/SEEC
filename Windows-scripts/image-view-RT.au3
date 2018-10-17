@@ -25,11 +25,12 @@
 
 ; ============================ Parameters initialization ====================
 ; QoS
-Local $aRTT[1] = [200];,50,100];1,2,5,10,50,100] ;,50, 150]
-Local $aLoss[1] = [10];,3] ;,0.05,1] ;packet loss rate, unit is %
+Local $aRTT[1] = [0];,50,100];1,2,5,10,50,100] ;,50, 150]
+Local $aLoss[1] = [0];,3,5];,3] ;,0.05,1] ;packet loss rate, unit is %
 Global $app = "ImageView"
 Local $logDir = "C:\Users\Harlem5\SEEC\Windows-scripts"
 local $picsDir = $logDir & "\Pics2\"
+local $picsExt = ".jpg"
 GLobal $routerIP = "172.28.30.124" ; the ip address of the server acting as router and running packet capture
 Global $routerIF = "ens160" ; the router interface where the clinet is connected
 GLobal $routerUsr = "harlem1"
@@ -38,14 +39,15 @@ Local $timeInterval = 20000 ;30000
 Local $picName = "test-pic"
 Local $clinetIPAddress = "172.28.30.9"
 Global $udpPort = 60000
-Global $no_tasks = 6
-Global $runNo = 2
+Global $no_tasks = 1
+Global $runNo = 51
+Local $no_of_runs = 1
 
 
 
 ;============================= Create a file for results======================
 ; Create file in same folder as script
-Global $sFileName = $logDir &"\results\" & $app &"-RT-autoit-run-no-"& $runNo & ".txt"
+Global $sFileName = $logDir &"\results\" & $app &"_RT_autoit_run_"& $runNo  ;".txt"
 
 ; Open file
 Global $hFilehandle = FileOpen($sFileName, $FO_APPEND)
@@ -64,7 +66,8 @@ Else
 Local $i = 1
 while  $i <= $no_tasks
    ;Send('{RIGHT}') ;send right arrrow to move to next pic
-   ShellExecute($picsDir &$i&".jpg","","","",@SW_MAXIMIZE)
+   ;ShellExecute($picsDir &$i&".jpg","","","",@SW_MAXIMIZE)
+   ShellExecute($picsDir &$i&$picsExt,"","","",@SW_MAXIMIZE)
    Local $hImage = WinWaitActive("Photos")
    ;MsgBox($MB_SYSTEMMODAL, "File", "pic opened")
    WinClose($hImage)
@@ -77,6 +80,8 @@ Local $hClumsy = Clumsy("", "open", $clinetIPAddress)
 
 ;For $i = 0 To UBound($aRTT) - 1
 ;   For $j = 0 To UBound($aLoss) - 1
+
+For $n = 1 To $no_of_runs:
 
 For $j = 0 To UBound($aLoss) - 1
    For $i = 0 To UBound($aRTT) - 1
@@ -98,11 +103,11 @@ For $j = 0 To UBound($aLoss) - 1
 	  ;mark start of task with a udp packet
 	  SendPacket("start")
 
-	  ShellExecute($picsDir & "1.jpg","","","",@SW_MAXIMIZE)
+	  ShellExecute($picsDir & "1" & $picsExt,"","","",@SW_MAXIMIZE)
 	  Local $hImage = WinWaitActive("Photos")
 
 	  $file_name = $app & "-task-1-capture-rtt-" & $aRTT[$i] & "-loss-" & $aloss[$j]
-	  _ScreenCapture_Capture($logDir & "\screenShots\" & $file_name & ".png", "","",-1,-1, False)
+	  ;_ScreenCapture_Capture($logDir & "\screenShots\" & $file_name & ".png", "","",-1,-1, False)
 	  Local $timeDiff = TimerDiff($hTimer)/1000 ; find the time difference from the first call of TImerInit, unit sec
 	  SendPacket("end")
 	  FileWrite($hFilehandle, $aRTT[$i] & " "& $aLoss[$j] & " " & $timeDiff & " ")
@@ -119,12 +124,12 @@ For $j = 0 To UBound($aLoss) - 1
 		 ;mark start of task with a udp packet
 		 SendPacket("start")
 
-		 ShellExecute($picsDir &$k&".jpg","","","",@SW_MAXIMIZE)
+		 ShellExecute($picsDir &$k&$picsExt,"","","",@SW_MAXIMIZE)
 		 $hImage = WinWaitActive("Photos")
 
 		 Local $timeDiff = TimerDiff($hTimer)/1000 ; find the time difference from the first call of TImerInit, unit sec
 		 $file_name = $app & "-task-"&$k&"-capture-rtt-" & $aRTT[$i] & "-loss-" & $aloss[$j]
-		 _ScreenCapture_Capture($logDir & "\screenShots\" & $file_name & ".png", "","",-1,-1, False)
+		 ;_ScreenCapture_Capture($logDir & "\screenShots\" & $file_name & ".png", "","",-1,-1, False)
 		 SendPacket("end")
 		 FileWrite($hFilehandle, $timeDiff & " ")
 
@@ -144,6 +149,8 @@ For $j = 0 To UBound($aLoss) - 1
 	  Clumsy($hClumsy, "stop")
 
    Next
+Next
+
 Next
 
  WinClose($hClumsy)
