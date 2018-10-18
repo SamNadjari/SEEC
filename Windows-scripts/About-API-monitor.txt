@@ -1,0 +1,10 @@
+
+Monitoring with API Monitor v2 64-bit
+
+Use notepad.au3 which has only very few of lines, just to understand how winWaitActive() function work.
+Autoit do system call to use shellexecute to run notepad (see #684683), then it uses EnumWindows() 
+to iterate over windows and use GetWindowText() to read the window title and compare it to the title 
+provided in WinWaitActive(). See #757153
+
+- I initintially added a sleep statement before and after WinWaitActive(), and indeed GetWIndoeText() 
+call is hapenning between the two sleep statement

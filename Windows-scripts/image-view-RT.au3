@@ -29,7 +29,7 @@ Local $aRTT[1] = [0];,50,100];1,2,5,10,50,100] ;,50, 150]
 Local $aLoss[1] = [0];,3,5];,3] ;,0.05,1] ;packet loss rate, unit is %
 Global $app = "ImageView"
 Local $logDir = "C:\Users\Harlem5\SEEC\Windows-scripts"
-local $picsDir = $logDir & "\Pics2\"
+local $picsDir = $logDir & "\Pics6\"
 local $picsExt = ".jpg"
 GLobal $routerIP = "172.28.30.124" ; the ip address of the server acting as router and running packet capture
 Global $routerIF = "ens160" ; the router interface where the clinet is connected
@@ -39,9 +39,9 @@ Local $timeInterval = 20000 ;30000
 Local $picName = "test-pic"
 Local $clinetIPAddress = "172.28.30.9"
 Global $udpPort = 60000
-Global $no_tasks = 1
-Global $runNo = 51
-Local $no_of_runs = 1
+Global $no_tasks = 9
+Global $runNo = "9-Pics6"
+Local $no_of_runs = 10
 
 
 
