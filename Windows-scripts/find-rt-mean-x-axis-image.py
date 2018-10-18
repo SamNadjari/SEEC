@@ -15,9 +15,10 @@ app="ImageView"
 total_runs=23
 method=["display_updates_2"] #["autoit","display_updates","display_updates_2"] #"RT_marker_packets_2"
 leg_title=["DUT"] #,"RT-Autoit", "RT-marker"] #the name to use for legend
-run_no=17
-no_tasks=6
+run_no="9-Pics6"
+no_tasks=9
 pixels_count = [18675,24639,129190,309237,563443,733950] #no of unique pixels in each image
+pixels_count = [18675, 24639,41646,129190, 212414, 309237, 389874, 563443, 733950] #, 1844451]
 
 res_dir="/home/harlem1/SEEC/Windows-scripts/results"
 plot_dir='/home/harlem1/SEEC/Windows-scripts/plots/new-mean'
@@ -109,7 +110,7 @@ for meth in method:
             globals()[temp5].append(np.mean(globals()[temp1]))
             if meth != "autoit": 
                 globals()[temp6].append(np.mean(globals()[temp3]))
-            #print("temp5, ",temp5," ",globals()[temp5])
+            print("temp5, ",temp5," ",globals()[temp5])
 
 #=================================Plot======================================
 

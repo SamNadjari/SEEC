@@ -1,0 +1,31 @@
+14356720473_16f9654992_z.jpg  14796103147_921d4e4cd0_z.jpg  2642164258_741958b573_m.jpg      3936768148_f6b0797ef4_o.jpg  xxxxx.jpg
+14356720473_db7c671118_h.jpg  2508539927_a1f679c8a2_o.jpg   2642164258_741958b573_z.jpg      x.jpg                        y.jpg
+14356720473_f0786a7d2e_o.jpg  2508539927_fcf8d21403_m.jpg   2642164258_e12304b00b_o.jpg      xx.jpg                       yy.jpg
+14796103147_2b4966a88a_o.jpg  2508539927_fcf8d21403_z.jpg   3936768148_290f093a94_z (1).jpg  xxx.jpg                      yyy.jpg
+14796103147_921d4e4cd0_m.jpg  2642164258_741958b573_b.jpg   3936768148_290f093a94_z.jpg      xxxx.jpg                     yyyy.jpg
+harlem1@router:~/SEEC/Windows-scripts/Pics4$ magick identify -verbose -features 1 -moments -unique *.jpg  | grep Colors:
+  Colors: 41646
+  Colors: 82470
+  Colors: 71720
+  Colors: 361652
+  Colors: 27600
+  Colors: 116559
+  Colors: 468957
+  Colors: 39693
+  Colors: 147505
+  Colors: 212414
+  Colors: 30150
+  Colors: 145276
+  Colors: 389874
+  Colors: 82881
+  Colors: 82881
+  Colors: 158413
+  Colors: 102440
+  Colors: 1844451
+  Colors: 789809
+  Colors: 877568
+  Colors: 202504
+  Colors: 257513
+  Colors: 402855
+  Colors: 255396
+  Colors: 501871

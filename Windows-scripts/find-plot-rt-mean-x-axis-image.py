@@ -12,13 +12,14 @@ import math
 #=====================Initialize parameters===============
 #input arguments
 rtt=[0,20,50,100,200]
-loss=[0,3,5]
+loss=[0] #,3,5]
 app="ImageView"
 total_runs=23
 method=["display_updates_2"] #["autoit","display_updates","display_updates_2"] #"RT_marker_packets_2"
-run_no="18_copy"
-no_tasks=6
+run_no="9-Pics6"
+no_tasks=10
 pixels_count = [18675,24639,129190,309237,563443,733950] #no of unique pixels in each image
+pxels_count = [18675, 24639,41646,129190, 212414, 309237, 389874, 563443, 733950, 1844451]
 
 res_dir="/home/harlem1/SEEC/Windows-scripts/results"
 plot_dir='/home/harlem1/SEEC/Windows-scripts/plots/new-mean'
