@@ -1,0 +1,16 @@
+harlem1@router:~/SEEC/Windows-scripts/Pics7$ magick identify *.jpg | grep JPEG | awk '{print $1, $3}'
+1.jpg 150x150
+2.jpg 240x159
+3.jpg 640x426
+4.jpg 2048x1365
+5.jpg 4608x3072
+harlem1@router:~/SEEC/Windows-scripts/Pics7$ magick identify -verbose -features 1 -moments -unique *.jpg  | grep Colors:
+
+  Colors: 20776
+  Colors: 33994
+  Colors: 161190
+  Colors: 563443
+  Colors: 1002397
+
+Results:
+0 0 4.785547 4.890037 5.597192 6.220915 6.940918 1203630.0 1084546.0 2377530.0 2750492.0 3228524.0
