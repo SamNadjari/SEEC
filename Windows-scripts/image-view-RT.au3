@@ -21,27 +21,27 @@
 
 #RequireAdmin ; this required for clumsy to work properlys
 
-
+Opt("WinTitleMatchMode",-2) ;1=start, 2=subStr, 3=exact, 4=advanced, -1 to -4=Nocase ;used for WInWaitActive title matching
 
 ; ============================ Parameters initialization ====================
 ; QoS
 Local $aRTT[1] = [0];,50,100];1,2,5,10,50,100] ;,50, 150]
-Local $aLoss[1] = [0];,3,5];,3] ;,0.05,1] ;packet loss rate, unit is %
+Local $aLoss[1] = [0,3,5];,3] ;,0.05,1] ;packet loss rate, unit is %
 Global $app = "ImageView"
 Local $logDir = "C:\Users\Harlem5\SEEC\Windows-scripts"
-local $picsDir = $logDir & "\Pics7\"
+local $picsDir = $logDir & "\Pics10\"
 local $picsExt = ".jpg"
 GLobal $routerIP = "172.28.30.124" ; the ip address of the server acting as router and running packet capture
 Global $routerIF = "ens160" ; the router interface where the clinet is connected
 GLobal $routerUsr = "harlem1"
 Global $routerPsw = "harlem"
-Local $timeInterval = 10000 ;30000
+Local $timeInterval = 20000 ;30000
 Local $picName = "test-pic"
 Local $clinetIPAddress = "172.28.30.9"
 Global $udpPort = 60000
-Global $no_tasks = 5
-Global $runNo = "1-Pics7"
-Local $no_of_runs = 1
+Global $no_tasks = 1
+Global $runNo = "2-Pics10"
+Local $no_of_runs = 15
 
 
 
@@ -59,6 +59,7 @@ Else
     MsgBox($MB_SYSTEMMODAL, "File", "Does not exist")
  EndIf
 
+;#comments-start
  ;=====================open the app and load all pic to RAM============
 ;ShellExecute($logDir & "\Pics\1.jpg","","","",@SW_MAXIMIZE)
 ;Local $hImage = WinWaitActive("Photos")
@@ -73,6 +74,7 @@ while  $i <= $no_tasks
    WinClose($hImage)
    $i = $i + 1
 WEnd
+;#comments-end
 
 ;================= Start actual test =============================
 ;setup clumsy basic param to prepare for network configuration
@@ -115,9 +117,11 @@ For $j = 0 To UBound($aLoss) - 1
 	  WinClose($hImage)
 
 
+
 	  ;load images one by one with sleep in between
 	  Local $k = 2
 	  while  $k <= $no_tasks
+
 
 		 ;log time
 		 Local $hTimer = TimerInit() ;begin the timer and store the handler
@@ -137,6 +141,8 @@ For $j = 0 To UBound($aLoss) - 1
 		 WinClose($hImage)
 		 $k = $k + 1
 
+
+
 	  WEnd
 
 	  FileWrite($hFilehandle, @CRLF) ;add new line to the file
@@ -144,7 +150,7 @@ For $j = 0 To UBound($aLoss) - 1
 	  router_command("stop_capture")
 
 	  ;analyze results
-	  router_command("analyze_results","",$aRTT[$i], $aLoss[$j])
+	  router_command("analyze_results","",$aRTT[$i], $aLoss[$j],$n) ;$n is the count within one run
 
 	  Clumsy($hClumsy, "stop")
 
@@ -198,7 +204,7 @@ Func SendPacket($msg)
 EndFunc
 
 
-Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capture", "stop_capture", "analyze"
+Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0,$n=0); cmd: "start_capture", "stop_capture", "analyze"
 
 	; open putty
 	ShellExecute("C:\Program Files\PuTTY\putty")
@@ -250,7 +256,7 @@ Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capt
 	  Send("{ENTER}")
 
 	  ElseIf $cmd = "analyze_results" Then
-	  $command = "sh SEEC/Windows-scripts/analyze_RT.sh  " & $clinetIPAddress & " " & $rtt & " " & $loss & " " & $no_tasks & " " & $app & " " & $runNo
+	  $command = "sh SEEC/Windows-scripts/analyze_RT.sh  " & $clinetIPAddress & " " & $rtt & " " & $loss & " " & $no_tasks & " " & $app & " " & $runNo  & " " & $n
 	  Send($command)
 	  Send("{ENTER}")
 
