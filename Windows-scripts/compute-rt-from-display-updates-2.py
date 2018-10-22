@@ -16,19 +16,20 @@ rtt=sys.argv[3]
 loss=sys.argv[4]
 app=sys.argv[5]
 run_no=sys.argv[6]
+count=sys.argv[7]
 
-parsed_pcap="tshark-pckts-parsed"
+parsed_pcap="tshark-pckts-parsed-rtt-"+rtt+"-loss-"+loss+"-run-no-"+run_no+"-count-"+count # to keep each parsed pcap in case we want to try new threshold value
 res_dir="/home/harlem1/SEEC/Windows-scripts/results"
 th_time = 0.500 #threshhold interarrival time to represent new update (unit sec)
 #log_dir="/home/harlem1/SEEC/Windows-scripts"
 
 #====================Process PCAP==========================
 #process the pcap file and get the marker packets timestamps
-command = "tshark -r " + pcap +" \"ip.dst=="+ dst_IP +" and not icmp\" | grep UDP | awk '{print $2,$7,$10}' > "+ res_dir + "/" + parsed_pcap
+command = "tshark -r " + pcap +" \"ip.dst=="+ dst_IP +" and not icmp\" | grep UDP | awk '{print $2,$7,$10}' > "+ res_dir + "/parsed-pcap/" + parsed_pcap
 os.system(command)
 
 #load the parsed pcap file data (ts, packet size, dst port)
-ts,size,port = np.loadtxt(res_dir+"/"+parsed_pcap, delimiter=' ', usecols=(0,1,2),unpack=True)
+ts,size,port = np.loadtxt(res_dir+"/parsed-pcap/"+parsed_pcap, delimiter=' ', usecols=(0,1,2),unpack=True)
 
 #===================Pre processing packets======================
 #remove all PCoIP communication packets which are of size 110B
@@ -117,5 +118,5 @@ np.savetxt(f, rt.reshape(1, rt.shape[0]), fmt="%s") #the reshape function is use
 f.close()
 
 #delete pcap and parsed file
-command = "rm "+ res_dir + "/" + parsed_pcap
+#command = "rm "+ res_dir + "/parsed-pcap/" + parsed_pcap
 os.system(command) 
