@@ -2,7 +2,6 @@ Google.com
 Youtube.com
 Facebook.com
 Amazon.com
-Amazon.com
 Reddit.com
 Yahoo.com
 Twitter.com
@@ -12,9 +11,8 @@ Ebay.com
 Netflix.com
 Espn.com
 Twitch.tv
-Microsoftonline.com
 Office.com
-Live.com
+outlook.com
 Imgur.com
 Craigslist.org
 Cnn.com

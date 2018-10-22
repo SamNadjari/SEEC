@@ -105,8 +105,21 @@ For $n = 0 To 3 ;$no_sites-1
    FileWrite($hFilehandle, $timeDiff & " ")
 
    Sleep(1000)
-   Search($hWnd, 331,165,"speaker")
-   Sleep(4000)
+
+   Switch $sWebSiteTitle
+   Case "Google"
+	  Search($hWnd, 475,418,"speaker")
+   Case "Amazon"
+	  Search($hWnd, 331,165,"speaker")
+   Case "Youtube"
+	  Search($hWnd, 548,108,"speaker")
+   Case "Ebay"
+	  Search($hWnd, 491,140,"speaker")
+   EndSwitch
+
+   Sleep(1000)
+
+
    ScrollDown()
 
    Sleep(1000)
