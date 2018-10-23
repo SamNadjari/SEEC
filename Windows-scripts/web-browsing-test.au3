@@ -13,7 +13,7 @@
 #RequireAdmin ; this required for clumsy to work properlys
 
 Opt("WinTitleMatchMode",-2) ;1=start, 2=subStr, 3=exact, 4=advanced, -1 to -4=Nocase
-
+;opt("MouseCoordMode",0)
 
 
 
@@ -23,7 +23,7 @@ Opt("WinTitleMatchMode",-2) ;1=start, 2=subStr, 3=exact, 4=advanced, -1 to -4=No
 Local $aRTT[1] = [0];,50,100];1,2,5,10,50,100] ;,50, 150]
 Local $aLoss[1] = [0];,3,5];,3] ;,0.05,1] ;packet loss rate, unit is %
 Global $app = "Web"
-Local $logDir = "C:\Users\Harlem1\SEEC\Windows-scripts"
+Local $logDir = "C:\Users\Harlem5\SEEC\Windows-scripts"
 local $picsDir = $logDir & "\Pics6\"
 local $picsExt = ".jpg"
 GLobal $routerIP = "172.28.30.124" ; the ip address of the server acting as router and running packet capture
@@ -104,20 +104,20 @@ For $n = 0 To 3 ;$no_sites-1
    $timeDiff = TimerDiff($hTimer)/1000
    FileWrite($hFilehandle, $timeDiff & " ")
 
-   Sleep(1000)
+   Sleep(5000)
 
    Switch $sWebSiteTitle
    Case "Google"
-	  Search($hWnd, 475,418,"speaker")
+	  Search($hWnd, 840,412,"speaker")
    Case "Amazon"
-	  Search($hWnd, 331,165,"speaker")
+	  Search($hWnd, 660,156,"speaker")
    Case "Youtube"
-	  Search($hWnd, 548,108,"speaker")
+	  Search($hWnd, 679,100,"speaker")
    Case "Ebay"
-	  Search($hWnd, 491,140,"speaker")
+	  Search($hWnd, 600,130,"speaker")
    EndSwitch
 
-   Sleep(1000)
+   Sleep(5000)
 
 
    ScrollDown()
@@ -144,8 +144,8 @@ Func Search($hWnd, $x,$y,$sWord)
 
 ; Fuction to convert screen coordinates
 Func _ConvertXY(ByRef $Xin, ByRef $Yin)
-     $Xin = Round( ($Xin / 1440) * @DesktopWidth ) ; 1440 is the display resoution of the display where I wrote my code and based on it found the x,y coord
-     $Yin = Round( ($Yin / 900) * @DesktopHeight )
+     $Xin = Round( ($Xin / 1680) * @DesktopWidth ) ; 1680 is the display resoution of the display where I wrote my code and based on it found the x,y coord
+     $Yin = Round( ($Yin / 1050) * @DesktopHeight )
 EndFunc
 
 
