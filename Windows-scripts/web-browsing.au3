@@ -39,7 +39,7 @@ Local $timeInterval = 20000 ;30000
 Local $picName = "test-pic"
 Local $clinetIPAddress = "172.28.30.9"
 Global $udpPort = 60000
-Global $no_tasks = 9
+Global $no_tasks = 15
 Global $runNo = 1
 Local $no_of_runs = 1
 
@@ -116,9 +116,23 @@ For $j = 0 To UBound($aLoss) - 1
 	  Sleep($timeInterval)
 
 
-	  For $k = 0 To 3 ;$no_sites-1
+	  For $k = 0 To $no_sites-1
+		 ;open new tab
+		 Send("^t")
 
 		 $sWebSiteTitle = StringTrimRight ( $aWebSites[$k], 4 ); to remove .com from the website name
+		 If $sWebSiteTitle == "Wikia" Then
+			$sWebSiteTitle = "FANDOM"
+		 ElseIf $sWebSiteTitle  == "Nytimes" Then
+			$sWebSiteTitle = "New York Times"
+		  ElseIf $sWebSiteTitle  == "Stackoverflow" Then
+			$sWebSiteTitle = "Stack"
+		 ElseIf $sWebSiteTitle  == "Bankofamerica" or == $sWebSiteTitle "Wellsfargo" Then
+			$sWebSiteTitle = "bank"
+		 ElseIf $sWebSiteTitle  == "Amazonaws" Then
+			$sWebSiteTitle = "Amazon"
+			EndIf
+
 		 Sleep(1000)
 
 		 ;vist the web-site
@@ -128,13 +142,12 @@ For $j = 0 To UBound($aLoss) - 1
 		 Send("{ENTER}") ;click enter to go the website
 		 WinWaitActive($sWebSiteTitle)
 		 $timeDiff = TimerDiff($hTimer)/1000
+		 SendPacket("end") ;send marker paket
 		 FileWrite($hFilehandle, $timeDiff & " ")
 
 		 Sleep($timeInterval)
 		 ;close current tab
 		 Send("^w")
-		 ;open new tab
-		 Send("^t")
 	  Next
 
 	  FileWrite($hFilehandle, @CRLF) ;add new line to the file
@@ -143,17 +156,21 @@ For $j = 0 To UBound($aLoss) - 1
 	  router_command("stop_capture")
 
 	  ;analyze results
-	  router_command("analyze_results","",$aRTT[$i], $aLoss[$j])
+	  router_command("analyze_results","",$aRTT[$i], $aLoss[$j],$n) ;$n is the count within one run
 
 	  Clumsy($hClumsy, "stop")
 
    Next
 Next
+ ;close current tab and window
+Send("^w")
+Send("^w")
+Send("^w")
 
 Next
 
  WinClose($hClumsy)
- WinClose(
+
 
 
 
@@ -198,7 +215,7 @@ Func SendPacket($msg)
 EndFunc
 
 
-Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capture", "stop_capture", "analyze"
+Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0, $n=0); cmd: "start_capture", "stop_capture", "analyze"
 
 	; open putty
 	ShellExecute("C:\Program Files\PuTTY\putty")
@@ -250,17 +267,18 @@ Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0); cmd: "start_capt
 	  Send("{ENTER}")
 
 	  ElseIf $cmd = "analyze_results" Then
-	  $command = "sh SEEC/Windows-scripts/analyze_RT.sh  " & $clinetIPAddress & " " & $rtt & " " & $loss & " " & $no_tasks & " " & $app & " " & $runNo
+	  $command = "sh SEEC/Windows-scripts/analyze_RT.sh  " & $clinetIPAddress & " " & $rtt & " " & $loss & " " & $no_tasks & " " & $app & " " & $runNo & " " & $n
 	  Send($command)
 	  Send("{ENTER}")
+	  Sleep(20000) ; becaue it takes some time to process
 
 
 	EndIf
 
 	;close putty
 	Sleep(500)
-	Send("exit")
-	Send("{ENTER}")
+	;Send("exit")
+	;Send("{ENTER}")
 
 EndFunc
 
