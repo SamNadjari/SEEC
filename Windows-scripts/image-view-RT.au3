@@ -26,7 +26,7 @@ Opt("WinTitleMatchMode",-2) ;1=start, 2=subStr, 3=exact, 4=advanced, -1 to -4=No
 ; ============================ Parameters initialization ====================
 ; QoS
 Local $aRTT[1] = [0];,50,100];1,2,5,10,50,100] ;,50, 150]
-Local $aLoss[1] = [0,3,5];,3] ;,0.05,1] ;packet loss rate, unit is %
+Local $aLoss[3] = [0,3,5];,3] ;,0.05,1] ;packet loss rate, unit is %
 Global $app = "ImageView"
 Local $logDir = "C:\Users\Harlem5\SEEC\Windows-scripts"
 local $picsDir = $logDir & "\Pics10\"
@@ -39,8 +39,8 @@ Local $timeInterval = 20000 ;30000
 Local $picName = "test-pic"
 Local $clinetIPAddress = "172.28.30.9"
 Global $udpPort = 60000
-Global $no_tasks = 1
-Global $runNo = "2-Pics10"
+Global $no_tasks = 6
+Global $runNo = "3-Pics10"
 Local $no_of_runs = 15
 
 
