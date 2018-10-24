@@ -28,7 +28,7 @@ Opt("WinTitleMatchMode",-2) ;1=start, 2=subStr, 3=exact, 4=advanced, -1 to -4=No
 ; ============================ Parameters initialization ====================
 ; QoS
 Local $aRTT[1] = [0];,50,100];1,2,5,10,50,100] ;,50, 150]
-Local $aLoss[1] = [0];,3,5];,3] ;,0.05,1] ;packet loss rate, unit is %
+Local $aLoss[3] = [0,3,5];,3] ;,0.05,1] ;packet loss rate, unit is %
 Global $app = "WebBrowsing"
 Local $logDir = "C:\Users\Harlem5\SEEC\Windows-scripts"
 GLobal $routerIP = "172.28.30.124" ; the ip address of the server acting as router and running packet capture
@@ -40,12 +40,12 @@ Local $picName = "test-pic"
 Local $clinetIPAddress = "172.28.30.9"
 Global $udpPort = 60000
 Global $no_tasks = 15
-Global $runNo = 1
-Local $no_of_runs = 1
+Global $runNo = 3
+Local $no_of_runs = 15
 
 ;============================= Read website list from a file =======================
 
-$sFileName = $logDir & "/alexa-list-parsed.txt"
+$sFileName = $logDir & "/alexa-list-parsed-cleaned.txt"
 
 ; Open the file for reading and store the handle to a variable.
 Local $hFileOpen = FileOpen($sFileName, $FO_READ)
@@ -162,10 +162,7 @@ For $j = 0 To UBound($aLoss) - 1
 
    Next
 Next
- ;close current tab and window
-Send("^w")
-Send("^w")
-Send("^w")
+WinClose($hChrome)
 
 Next
 
@@ -267,18 +264,19 @@ Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0, $n=0); cmd: "star
 	  Send("{ENTER}")
 
 	  ElseIf $cmd = "analyze_results" Then
-	  $command = "sh SEEC/Windows-scripts/analyze_RT.sh  " & $clinetIPAddress & " " & $rtt & " " & $loss & " " & $no_tasks & " " & $app & " " & $runNo & " " & $n
+	  $command = "nohup sh SEEC/Windows-scripts/analyze_RT.sh  " & $clinetIPAddress & " " & $rtt & " " & $loss & " " & $no_tasks & " " & $app & " " & $runNo & " " & $n & " & disown" ;I'm using nohup & disown so that the process is not killed when autoit quit the terminal
 	  Send($command)
 	  Send("{ENTER}")
-	  Sleep(20000) ; becaue it takes some time to process
+	  Send("{ENTER}")
+	  Sleep(35000) ; becaue it takes some time to process and we don't want to overwrite the pcap
 
 
 	EndIf
 
 	;close putty
 	Sleep(500)
-	;Send("exit")
-	;Send("{ENTER}")
+	Send("exit")
+	Send("{ENTER}")
 
 EndFunc
 
