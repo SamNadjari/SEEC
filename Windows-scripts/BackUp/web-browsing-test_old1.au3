@@ -13,9 +13,6 @@
 #RequireAdmin ; this required for clumsy to work properlys
 
 Opt("WinTitleMatchMode",-2) ;1=start, 2=subStr, 3=exact, 4=advanced, -1 to -4=Nocase
-;opt("MouseCoordMode",0)
-
-
 
 
 ; ============================ Parameters initialization ====================
@@ -77,7 +74,7 @@ Else
 
 ;==================================== activity =====================================
 
-MsgBox($MB_SYSTEMMODAL, "", "Display"&@DesktopWidth&" x "&@DesktopHeight)
+
 ;load the web-browser (Chrome)
 ;log time
 Local $hTimer = TimerInit() ;begin the timer and store the handler
@@ -93,60 +90,25 @@ FileWrite($hFilehandle, $aRTT[0] & " "& $aLoss[0] & " " & $timeDiff & " ")
 ;Sleep($timeInterval)
 
 For $n = 0 To 3 ;$no_sites-1
-   ;open new tab
-   Send("^t")
+
    $sWebSiteTitle = StringTrimRight ( $aWebSites[$n], 4 ); to remove .com from the website name
    Sleep(1000)
    $hTimer = TimerInit()
    Send($aWebSites[$n])
    Send("{ENTER}")
-   $hWnd = WinWaitActive($sWebSiteTitle)
+   WinWaitActive($sWebSiteTitle)
    $timeDiff = TimerDiff($hTimer)/1000
    FileWrite($hFilehandle, $timeDiff & " ")
-
-   Sleep(5000)
-
-   Switch $sWebSiteTitle
-   Case "Google"
-	  Search($hWnd, 840,412,"speaker")
-   Case "Amazon"
-	  Search($hWnd, 660,156,"speaker")
-   Case "Youtube"
-	  Search($hWnd, 679,100,"speaker")
-   Case "Ebay"
-	  Search($hWnd, 600,130,"speaker")
-   EndSwitch
-
-   Sleep(5000)
-
-
-   ScrollDown()
 
    Sleep(1000)
    ;close current tab
    Send("^w")
-
+   ;open new tab
+   Send("^t")
 Next
 
 FileWrite($hFilehandle, @CRLF)
 
-Func ScrollDown()
-   Send('{PGDN}')
-EndFunc
-
-Func Search($hWnd, $x,$y,$sWord)
-   _ConvertXY($x, $y) ; Convert proportionally to the actual desktop size
-
-   MouseClick("left",$x,$y)
-   Send($sWord)
-   Send('{ENTER}')
-   EndFunc
-
-; Fuction to convert screen coordinates
-Func _ConvertXY(ByRef $Xin, ByRef $Yin)
-     $Xin = Round( ($Xin / 1680) * @DesktopWidth ) ; 1680 is the display resoution of the display where I wrote my code and based on it found the x,y coord
-     $Yin = Round( ($Yin / 1050) * @DesktopHeight )
-EndFunc
 
 
 

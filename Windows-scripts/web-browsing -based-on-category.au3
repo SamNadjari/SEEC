@@ -6,6 +6,7 @@
 	RT objective test for web-browsing
 #ce ----------------------------------------------------------------------------
 
+;Note: I need to add nohub to the analyze_RT script command down there (TODO)
 ; Script Start - Add your code below here
 
 #include <EditConstants.au3>
@@ -42,44 +43,57 @@ Global $udpPort = 60000
 Global $no_tasks = 15
 Global $runNo = 1
 Local $no_of_runs = 1
+Global $aWebsites_cate = ["search", "shopping", "news", "video", "social", "forums", "misc"]
 
 ;============================= Read website list from a file =======================
 
-$sFileName = $logDir & "/alexa-list-parsed.txt"
+$no_cate = UBound($aWebsites_cate)
+$i=0
+For $name in $aWebsites_cate
+   $sFileName = $logDir & "/alexa-"&$name &".txt"
 
-; Open the file for reading and store the handle to a variable.
-Local $hFileOpen = FileOpen($sFileName, $FO_READ)
-If $hFileOpen = -1 Then
-   MsgBox($MB_SYSTEMMODAL, "", "An error occurred when reading the file.")
-   Exit
-EndIf
+   ; Open the file for reading and store the handle to a variable.
+   Local $hFileOpen = FileOpen($sFileName, $FO_READ)
+   If $hFileOpen = -1 Then
+	  MsgBox($MB_SYSTEMMODAL, "", "An error occurred when reading the file.")
+	  Exit
+   EndIf
 
-; Read the contents of the file  and save it to an attay
-$no_sites = _FileCountLines($hFileOpen)
-Local $aWebSites [$no_sites] ;crate array to hold web-sites
+   ; Read the contents of the file  and save it to an attay
+   $no_sites = _FileCountLines($hFileOpen)
 
-For $i = 1 to $no_sites
-   $line = FileReadLine($hFileOpen, $i)
-   $aWebSites[$i-1] = $line;-1 is because the array starts with 0 and not 1
+   Local $aWebSites [$no_sites][$no_cate] ;crate array to hold web-sites, each row represents a different category
+
+   For $j = 1 to $no_sites
+	  $line = FileReadLine($hFileOpen, $j)
+	  $aWebSites[i][$j-1] = $line;-1 is because the array starts with 0 and not 1
+   Next
+
+   $j = $i + 1
+   ; Close the handle returned by FileOpen.
+   FileClose($hFileOpen)
+
 Next
 
-; Close the handle returned by FileOpen.
-FileClose($hFileOpen)
-
 ;============================= Create a file for results======================
-; Create file in same folder as script
-Global $sFileName = $logDir &"\results\" & $app &"_RT_autoit_run_"& $runNo  ;".txt"
 
-; Open file
-Global $hFilehandle = FileOpen($sFileName, $FO_APPEND)
+Global $hFilehandle [$no_cate] ; array of file handler for each category
+$i = 0
+For $name in $aWebsites_cate
+   ; Create file in same folder as script
+   Global $sFileName = $logDir &"\results\" & $app & "_" & $name &"_RT_autoit_run_"& $runNo  ;".txt"
 
-; Prove it exists
-If FileExists($sFileName) Then
-    ;MsgBox($MB_SYSTEMMODAL, "File", "Exists")
-Else
-    MsgBox($MB_SYSTEMMODAL, "File", "Does not exist")
- EndIf
+   ; Open file
+   Global $hFilehandle [$i] = FileOpen($sFileName, $FO_APPEND)
 
+   ; Prove it exists
+   If FileExists($sFileName) Then
+	   ;MsgBox($MB_SYSTEMMODAL, "File", "Exists")
+   Else
+	   MsgBox($MB_SYSTEMMODAL, "File", "Does not exist")
+	EndIf
+
+Next
 
 ;================= Start  test =============================
 ;setup clumsy basic param to prepare for network configuration
@@ -87,84 +101,87 @@ Local $hClumsy = Clumsy("", "open", $clinetIPAddress)
 
 For $n = 1 To $no_of_runs:
 
-For $j = 0 To UBound($aLoss) - 1
-   For $i = 0 To UBound($aRTT) - 1
-	  ;configure clumsy
-	  Clumsy($hClumsy, "configure","",$aRTT[$i], $aloss[$j])
-	  Clumsy($hClumsy, "start")
+   For $j = 0 To UBound($aLoss) - 1
+	  For $i = 0 To UBound($aRTT) - 1
+		 $index = 0
+		 For $name in $aWebsites_cate
+			;configure clumsy
+			Clumsy($hClumsy, "configure","",$aRTT[$i], $aloss[$j])
+			Clumsy($hClumsy, "start")
 
-	  ; start packet capture
-	  router_command("start_capture")
+			; start packet capture
+			router_command("start_capture")
 
-	  ;setup UDP socket
-	  SetupUDP($clinetIPAddress, $udpPort)
+			;setup UDP socket
+			SetupUDP($clinetIPAddress, $udpPort)
 
-	  Sleep($timeInterval)
+			Sleep($timeInterval)
 
-	  ;load the web-browser (Chrome)
-	  ;log time
-	  Local $hTimer = TimerInit() ;begin the timer and store the handler
-	  ;mark start of task with a udp packet
-	  SendPacket("start")
+			;load the web-browser (Chrome)
+			;log time
+			Local $hTimer = TimerInit() ;begin the timer and store the handler
+			;mark start of task with a udp packet
+			SendPacket("start")
 
-	  ShellExecute("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe","","","",@SW_MAXIMIZE)
-	  Local $hChrome = WinWaitActive("New Tab - Google Chrome")
+			ShellExecute("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe","","","",@SW_MAXIMIZE)
+			Local $hChrome = WinWaitActive("New Tab - Google Chrome")
 
-	  Local $timeDiff = TimerDiff($hTimer)/1000 ; find the time difference from the first call of TImerInit, unit sec
-	  SendPacket("end")
-	  FileWrite($hFilehandle, $aRTT[$i] & " "& $aLoss[$j] & " " & $timeDiff & " ")
-	  Sleep($timeInterval)
+			Local $timeDiff = TimerDiff($hTimer)/1000 ; find the time difference from the first call of TImerInit, unit sec
+			SendPacket("end")
+			FileWrite($hFilehandle[$index], $aRTT[$i] & " "& $aLoss[$j] & " " & $timeDiff & " ")
+			Sleep($timeInterval)
 
 
-	  For $k = 0 To $no_sites-1
-		 ;open new tab
-		 Send("^t")
+			For $k = 0 To $no_sites-1
+			   ;open new tab
+			   Send("^t")
 
-		 $sWebSiteTitle = StringTrimRight ( $aWebSites[$k], 4 ); to remove .com from the website name
-		 If $sWebSiteTitle == "Wikia" Then
-			$sWebSiteTitle = "FANDOM"
-		 ElseIf $sWebSiteTitle  == "Nytimes" Then
-			$sWebSiteTitle = "New York Times"
-		  ElseIf $sWebSiteTitle  == "Stackoverflow" Then
-			$sWebSiteTitle = "Stack"
-		 ElseIf $sWebSiteTitle  == "Bankofamerica" or == $sWebSiteTitle "Wellsfargo" Then
-			$sWebSiteTitle = "bank"
-		 ElseIf $sWebSiteTitle  == "Amazonaws" Then
-			$sWebSiteTitle = "Amazon"
-			EndIf
+			   $sWebSiteTitle = StringTrimRight ( $aWebSites[$index][$k], 4 ); to remove .com from the website name
+			   If $sWebSiteTitle == "Wikia" Then
+				  $sWebSiteTitle = "FANDOM"
+			   ElseIf $sWebSiteTitle  == "Nytimes" Then
+				  $sWebSiteTitle = "New York Times"
+				ElseIf $sWebSiteTitle  == "Stackoverflow" Then
+				  $sWebSiteTitle = "Stack"
+			   ElseIf $sWebSiteTitle  == "Bankofamerica" or == $sWebSiteTitle "Wellsfargo" Then
+				  $sWebSiteTitle = "bank"
+			   ElseIf $sWebSiteTitle  == "Amazonaws" Then
+				  $sWebSiteTitle = "Amazon"
+				  EndIf
 
-		 Sleep(1000)
+			   Sleep(1000)
 
-		 ;vist the web-site
-		 Send($aWebSites[$k]) ;type the web-site name
-		 $hTimer = TimerInit() ;log time
-		 SendPacket("start") ;send marker paket
-		 Send("{ENTER}") ;click enter to go the website
-		 WinWaitActive($sWebSiteTitle)
-		 $timeDiff = TimerDiff($hTimer)/1000
-		 SendPacket("end") ;send marker paket
-		 FileWrite($hFilehandle, $timeDiff & " ")
+			   ;vist the web-site
+			   Send($aWebSites[$k]) ;type the web-site name
+			   $hTimer = TimerInit() ;log time
+			   SendPacket("start") ;send marker paket
+			   Send("{ENTER}") ;click enter to go the website
+			   WinWaitActive($sWebSiteTitle)
+			   $timeDiff = TimerDiff($hTimer)/1000
+			   SendPacket("end") ;send marker paket
+			   FileWrite($hFilehandle, $timeDiff & " ")
 
-		 Sleep($timeInterval)
-		 ;close current tab
-		 Send("^w")
+			   Sleep($timeInterval)
+			   ;close current tab
+			   Send("^w")
+			Next
+
+			FileWrite($hFilehandle[$index], @CRLF) ;add new line to the file
+
+			;stop capture
+			router_command("stop_capture")
+
+			;analyze results
+			router_command("analyze_results","",$aRTT[$i], $aLoss[$j],$n) ;$n is the count within one run
+
+			Clumsy($hClumsy, "stop")
+
+		 Next
 	  Next
-
-	  FileWrite($hFilehandle, @CRLF) ;add new line to the file
-
-	  ;stop capture
-	  router_command("stop_capture")
-
-	  ;analyze results
-	  router_command("analyze_results","",$aRTT[$i], $aLoss[$j],$n) ;$n is the count within one run
-
-	  Clumsy($hClumsy, "stop")
+	;close chrome
+	WinClose($Chrome)
 
    Next
-Next
- ;close chrome
- WinClose($Chrome)
-
 Next
 
  WinClose($hClumsy)
