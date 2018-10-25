@@ -162,12 +162,9 @@ For $j = 0 To UBound($aLoss) - 1
 
    Next
 Next
-<<<<<<< HEAD
+
  ;close chrome
- WinClose($Chrome)
-=======
-WinClose($hChrome)
->>>>>>> 7af98ce7aab0aa46c9f4872487b33b2fac659b7b
+ WinClose($hChrome)
 
 Next
 
@@ -273,7 +270,7 @@ Func router_command($cmd, $videoSpeed="slow", $rtt=0, $loss=0, $n=0); cmd: "star
 	  Send($command)
 	  Send("{ENTER}")
 	  Send("{ENTER}")
-	  Sleep(35000) ; becaue it takes some time to process and we don't want to overwrite the pcap
+	  Sleep(40000) ; becaue it takes some time to process and we don't want to overwrite the pcap
 
 
 	EndIf
