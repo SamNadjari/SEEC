@@ -15,10 +15,11 @@ app="ImageView"
 total_runs=23
 method=["display_updates_2"] #["autoit","display_updates","display_updates_2"] #"RT_marker_packets_2"
 leg_title=["DUT"] #,"RT-Autoit", "RT-marker"] #the name to use for legend
-run_no="9-Pics6"
-no_tasks=9
+run_no="3-Pics10"
+no_tasks=6
 pixels_count = [18675,24639,129190,309237,563443,733950] #no of unique pixels in each image
-pixels_count = [18675, 24639,41646,129190, 212414, 309237, 389874, 563443, 733950] #, 1844451]
+pixels_count = [150, 240, 640, 800, 1024, 1350]
+#pixels_count = [18675, 24639,41646,129190, 212414, 309237, 389874, 563443, 733950] #, 1844451]
 
 res_dir="/home/harlem1/SEEC/Windows-scripts/results"
 plot_dir='/home/harlem1/SEEC/Windows-scripts/plots/new-mean'
@@ -36,7 +37,7 @@ for meth in method:
             temp1 = "rt_"+meth+"_"+str(i)  #name of array created based on parameters (for rt)
             temp2 = "by_"+meth+"_"+str(i) #array for bytes
             #globals will evaluate the array name befor assigning it the values
-            globals()[temp1], globals()[temp2] = np.loadtxt(res_dir +'/' + file_name, delimiter=' ',usecols=(i+2,i+6),unpack=True)
+            globals()[temp1], globals()[temp2] = np.loadtxt(res_dir +'/' + file_name, delimiter=' ',usecols=(i+2,i+8),unpack=True)
 
 # read rtt and loss values and create arrays based on loss values
 #figure out the length of the file, read only one file , other files would have the same length
@@ -127,7 +128,8 @@ for meth in method:
     col_index = 0 #index to assign differnt colors for lines
     for l in loss_uniq:
         temp5 = "rt_"+meth+"_loss_" + str(l) + "_mean"
-        ax1.plot(pixels_count,globals()[temp5],color=colors[col_index],marker=markers[col_index],linewidth=2.0,markersize=10,label = leg_title[0]+', loss = '+str(l)+"%")
+#        ax1.plot(pixels_count,globals()[temp5],color=colors[col_index],marker=markers[col_index],linewidth=2.0,markersize=10,label = leg_title[0]+', loss = '+str(l)+"%")
+        ax1.plot(globals()[temp5],color=colors[col_index],marker=markers[col_index],linewidth=2.0,markersize=10,label = leg_title[0]+', loss = '+str(l)+"%")
         col_index = col_index + 1
 
 #create anothor axis for number of bytes
@@ -138,7 +140,8 @@ for meth in method:
     for l in loss_uniq:
         if meth != "autoit":
             temp6 = "by_"+meth+"_loss_" + str(l) + "_mean"
-            ax2.plot(pixels_count,globals()[temp6],color=colors[col_index],marker=markers[col_index],linestyle='dashed',linewidth=2.0,markersize=10,label = 'Bytes, loss = '+str(l)+"%")
+            #ax2.plot(pixels_count,globals()[temp6],color=colors[col_index],marker=markers[col_index],linestyle='dashed',linewidth=2.0,markersize=10,label = 'Bytes, loss = '+str(l)+"%")
+            ax2.plot(globals()[temp6],color=colors[col_index],marker=markers[col_index],linestyle='dashed',linewidth=2.0,markersize=10,label = 'Bytes, loss = '+str(l)+"%")
 
         col_index = col_index + 1
 

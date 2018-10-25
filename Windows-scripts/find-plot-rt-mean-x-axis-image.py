@@ -16,10 +16,11 @@ loss=[0] #,3,5]
 app="ImageView"
 total_runs=23
 method=["display_updates_2"] #["autoit","display_updates","display_updates_2"] #"RT_marker_packets_2"
-run_no="9-Pics6"
-no_tasks=10
+run_no="3-Pics10"
+no_tasks=6
 pixels_count = [18675,24639,129190,309237,563443,733950] #no of unique pixels in each image
-pxels_count = [18675, 24639,41646,129190, 212414, 309237, 389874, 563443, 733950, 1844451]
+pixels_count = [1,2,3,4,5,6]
+#pxels_count = [18675, 24639,41646,129190, 212414, 309237, 389874, 563443, 733950, 1844451]
 
 res_dir="/home/harlem1/SEEC/Windows-scripts/results"
 plot_dir='/home/harlem1/SEEC/Windows-scripts/plots/new-mean'
@@ -30,6 +31,7 @@ plot_name='/mean-RT-image-x-axis-'+app+'-total-runs-'+str(total_runs)+'-run-'+st
 for meth in method:
     for i in range(no_tasks):
         file_name = app + "_RT_"+meth+"_run_"+str(run_no)
+        #one array for each task (image)
         if meth == "autoit": #it doesn't have total no of bytes to read
             temp1 = "rt_"+meth+"_"+str(i)
             globals()[temp1] = np.loadtxt(res_dir +'/' + file_name, delimiter=' ',usecols=(i+2,),unpack=True)
@@ -37,7 +39,8 @@ for meth in method:
             temp1 = "rt_"+meth+"_"+str(i)  #name of array created based on parameters (for rt)
             temp2 = "by_"+meth+"_"+str(i) #array for bytes
             #globals will evaluate the array name befor assigning it the values
-            globals()[temp1], globals()[temp2] = np.loadtxt(res_dir +'/' + file_name, delimiter=' ',usecols=(i+2,i+6),unpack=True)
+            globals()[temp1], globals()[temp2] = np.loadtxt(res_dir +'/' + file_name, delimiter=' ',usecols=(i+2,i+8),unpack=True)
+
 
 # read rtt and loss values and create arrays based on loss values
 #figure out the length of the file, read only one file , other files would have the same length
@@ -55,6 +58,7 @@ print("unique rtt values = ",rtt_unique)
 #find indices where loss value equal to specific value and RTT of 0
 rtt_0 = np.where(rtt==0)
 print("rtt_0 ", rtt_0)
+
 for l in loss_uniq:
     temp1 = "loss_" + str(l) 
     x = np.where(loss==l)
@@ -86,7 +90,8 @@ for meth in method:
                 globals()[temp2] = []
 
 #append values to the arrays based on loss values
-#each image will hav xx (based on the total_runs) value for each loss rate
+#each image will have xx values (based on the total_runs) for each loss rate
+#find mean of each image and append it to an array of mean value for each loss rate
 #also find upper and lower values for error bar for each point
 z=1.96 # fro error bar
 for meth in method:
@@ -125,6 +130,9 @@ for meth in method:
                 globals()[temp6].append(np.mean(globals()[temp3]))
                 globals()[var_by].append(np.var(globals()[temp3]))
 
+        print(temp6," ",globals()[temp6])
+        print(var_by," ",globals()[var_by])
+
         #find error bar: Standared Error (SE) = var/sqrt(n), upper limit = mean + SE*z
         #change it to numpy array
         globals()[error_rt] = np.asarray(globals()[error_rt])
@@ -135,8 +143,10 @@ for meth in method:
         globals()[temp6] = np.asarray(globals()[temp6])
         #compute error bar
         globals()[error_rt] = (globals()[var_rt]/ math.sqrt(total_runs))
+        globals()[error_rt] = z*globals()[error_rt]
         if meth != "autoit":
             globals()[error_by] = (globals()[var_by]/ math.sqrt(total_runs))
+            globals()[error_by] = z*globals()[error_by]
         #globals()[error_rt] = globals()[temp5] + (globals()[temp6]/ math.sqrt(total_runs))
         print(error_by," ",globals()[error_by])
         
@@ -170,20 +180,21 @@ for meth in method:
         if meth != "autoit":
             temp6 = "by_"+meth+"_loss_" + str(l) + "_mean"
             error_by = "by_"+meth+"_loss_" + str(l) + "_error"
-    #        ax2.plot(pixels_count,globals()[temp6],color=colors[col_index],marker=markers[col_index],linestyle='dashed',linewidth=2.0,markersize=10,label = meth+',bytes, loss = '+str(l)+"%")
+#            ax2.plot(pixels_count,globals()[temp6],color=colors[col_index],marker=markers[col_index],linestyle='dashed',linewidth=2.0,markersize=10,label = meth+',bytes, loss = '+str(l)+"%")
             ax2.errorbar(pixels_count,globals()[temp6], yerr=globals()[error_by],color=colors[col_index], linestyle='dashed',linewidth=2.0,markersize=10,label = meth+',bytes, loss = '+str(l)+"%")
             print(error_by," ",globals()[error_by])
 
         col_index = col_index + 1
 
-ax1.legend(loc='upper left',ncol=3,bbox_to_anchor=(-0.5,1.18))
+#ax1.legend(loc='upper left',ncol=3,bbox_to_anchor=(-0.5,1.18))
 ax2.legend(loc='upper left',ncol=3,bbox_to_anchor=(-0.5,-0.1))
 
 plt.show()
     #save the plot for each image
 #plt.savefig(plot_dir + '/' +plot_name,format="png",bbox_inches='tight')
 #plt.close()
-'''        
+
+'''
 #===============================Save Results=========================
 #save results to file
 #change to np array to save file
