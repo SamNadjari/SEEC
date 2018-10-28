@@ -110,7 +110,7 @@ For $k = 0 To 3 ;$no_sites-1
    Send("^t")
 
    $sWebSiteTitle = StringTrimRight ( $aWebSites[$k], 4 ); to remove .com from the website name
-   ;some cases where the tab title (which is used for WinWaitActive is different than the website nam
+   ;some cases where the tab title (which is used for WinWaitActive is different than the website name)
    If $sWebSiteTitle == "Wikia" Then
 	  $sWebSiteTitle = "FANDOM"
    ElseIf $sWebSiteTitle  == "Nytimes" Then
@@ -228,8 +228,13 @@ Func AddItemToDic(ByRef $oDictionary)
     $oDictionary.Add ("Youtube.com", "video" )
     $oDictionary.Add ("Facebook.com","social" )
     $oDictionary.Add ("Amazon.com", "shop" )
-	$oDictionary.Add ("Reddit.com","news" )
-	$oDictionary.Add ("Yahoo.com", "search" )
+    $oDictionary.Add ("Reddit.com","news" )
+    $oDictionary.Add ("Yahoo.com", "search" )
+    $oDictionary.Add ("Cnn.com", "news" )
+    $oDictionary.Add ("Breitbart.com", "news" )
+    $oDictionary.Add ("Nytimes.com", "news" )
+    $oDictionary.Add ("Quora.com", "forum" )
+    $oDictionary.Add ("Stackoverflow.com", "forum" )
 
 	;TODO: add the websites you worked with, I'll add the rest, make sure to type the site exactly as it shown in the website list file
 EndFunc
@@ -324,7 +329,11 @@ Func NewsTest ($webSite, $hWnd, $cate)
    ;task3 click on post item
    Switch $webSite
    Case "Cnn.com"
-	  ClickOnItem($hWnd, 600,700,$cate) ; the x,y are not real just random number, need to change to the actual x,y coord
+	  ClickOnItem($hWnd, 430,190,$cate)
+   Case "Breitbart.com"
+   	  ClickOnItem($hWnd, 463,416,$cate)
+   Case "Nytimes.com"
+   	  ClickOnItem($hWnd, 682,688,$cate)
    EndSwitch
 
 EndFunc
@@ -334,6 +343,23 @@ Func BankTest ($webSite, $hWnd, $cate)
    ScrollDown($cate)
 EndFunc
 
+Func ForumTest ($webSite, $hWnd, $cate)
+
+   ;task2 scroll down
+   ScrollDown($cate)
+
+   Sleep($timeInterval)
+
+   ;TODO: add other websites with x, y coord to click on post/item
+   ;task3 click on post item
+   Switch $webSite
+   Case "Quora.com"
+	  ClickOnItem($hWnd, 634,435,$cate)
+   Case "Stackoverflow.com"
+	  ClickOnItem($hWnd, 647,682,$cate)
+   EndSwitch
+
+EndFunc
 
 
 Func SendPacket($msg)
